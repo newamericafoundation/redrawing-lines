@@ -1,0 +1,82 @@
+body {
+    width: 100svw;
+    height: 100svh;
+    max-width: 100svw;
+    max-height: 100svh;
+    overflow: hidden;
+}
+
+main {
+    width: 100svw;
+    height: 100svh;
+    max-width: 100svw;
+    max-height: 100svh;
+    display: flex;
+    overflow: hidden;
+    color: #000;
+}
+
+main div#comparison-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+#map-container-primary-map {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+}
+#map-container-comparison-map {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+}
+
+div.mapboxgl-compare div.compare-swiper-vertical {
+    background-color: var(--primary-teal);
+}
+
+div.mapboxgl-ctrl-geocoder {
+    box-shadow: unset;
+    background-color: #fff;
+    border: 1px solid #a3a3a3;
+    border-radius: 4px;
+}
+
+div.mapboxgl-ctrl-geocoder .mapboxgl-ctrl-geocoder--input {
+    color: #000;
+}
+
+div.mapboxgl-ctrl-geocoder svg {
+    fill: #000;
+}
+
+#loading-screen {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    padding-top: 18%;
+    vertical-align: center;
+    background-color: gray;
+    padding-left: 65%;
+}
+
+input[type='checkbox'] {
+    accent-color: green;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+    margin: 0;
+}

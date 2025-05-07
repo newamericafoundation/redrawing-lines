@@ -1,0 +1,45 @@
+.h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.h2 {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.h3 {
+    font-size: 1.75rem;
+    font-weight: bold;
+}
+
+.h4 {
+    font-size: 1.45rem;
+    font-weight: bold;
+}
+
+.h5 {
+    font-size: 1.15rem;
+    font-weight: 500;
+}
+
+.h6 {
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+.bodyLarge {
+    font-size: 1rem;
+}
+
+.body {
+    font-size: 0.8rem;
+}
+
+.bodySmall {
+    font-size: 0.7rem;
+}
+
+.small {
+    font-size: 0.5815rem;
+}

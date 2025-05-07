@@ -1,0 +1,24 @@
+.button {
+    cursor: pointer;
+    color: var(--black);
+    background: transparent;
+    display: inline-block;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.0625rem;
+    line-height: 0.75rem;
+    text-transform: uppercase;
+    border: 1px solid var(--black);
+    border-radius: 2px;
+    padding: 15px 25px;
+    -webkit-transition: all 0.15s ease-in-out;
+    -moz-transition: all 0.15s ease-in-out;
+    -o-transition: all 0.15s ease-in-out;
+    transition: all 0.15s ease-in-out;
+}
+
+.button:hover {
+    background: var(--black);
+    border: 1px solid rgba(51, 51, 51, 0);
+    color: var(--white);
+}

@@ -1,0 +1,29 @@
+import React, { PropsWithChildren } from 'react';
+import styles from 'src/components/IconButton/IconButton.module.css';
+
+type Props = {
+    label: string;
+    onClick?: () => void;
+    className?: string;
+};
+
+const IconButton: React.FC<PropsWithChildren<Props>> = ({
+    label,
+    onClick,
+    className = '',
+    children,
+}) => {
+    return (
+        <button
+            type="button"
+            onClick={onClick}
+            className={`${styles.button} ${className}`}
+            aria-label={label}
+            title={label}
+        >
+            {children}
+        </button>
+    );
+};
+
+export default IconButton;

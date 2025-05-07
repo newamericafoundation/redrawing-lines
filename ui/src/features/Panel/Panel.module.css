@@ -1,0 +1,220 @@
+.infoPanel {
+    width: 490px;
+    min-width: 490px;
+    height: 100vh;
+    background-color: #fff;
+
+    padding-left: 16px;
+    padding-right: 16px;
+
+    padding-top: 16px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.appHeader {
+    margin-top: 0.15em;
+    margin-bottom: 0.15em;
+}
+
+.section {
+    width: 100%;
+    min-height: 33%;
+
+    box-sizing: border-box;
+}
+
+.infoWrapper li::marker {
+    font-size: 0.6em;
+}
+
+.infoWrapper {
+    flex-direction: column;
+    height: calc(100vh - 243px);
+    max-height: calc(100vh - 243px);
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 4px;
+}
+
+.closeIcon {
+    width: 2em;
+    height: 2em;
+
+    color: #383838;
+}
+
+.chartWrapper {
+    position: relative;
+
+    margin-top: auto;
+    height: 48%;
+    min-height: 240px;
+    margin-bottom: 8px;
+}
+
+.chartButtonWrapper {
+    position: absolute;
+    top: 0;
+    left: 1px;
+}
+
+.chartButtonWrapper button svg {
+    width: 24px;
+    height: 24px;
+}
+
+.chartButtonWrapper button {
+    border: 1px solid #000;
+    border-radius: 4px;
+}
+
+.chartButtonWrapper button:hover,
+.chartButtonWrapper button:active {
+    background-color: #baeeea;
+}
+
+.chartButtonWrapper button:first-of-type {
+    margin-right: 8px;
+}
+
+.detailedInfoWrapper {
+    margin-top: auto;
+    margin-bottom: 16px;
+}
+
+.detailedInfoWrapper hr {
+    margin: auto;
+}
+
+.populationWrapper {
+    width: 40%;
+}
+
+.headersWrapper {
+    width: 22.5em;
+    justify-content: space-between;
+}
+
+.demographicList {
+    margin: 0;
+    padding-inline-start: 1.25em;
+}
+
+.valPovWrapper {
+    text-align: center;
+    width: 50%;
+}
+
+.metricsWrapper {
+    width: 90%;
+}
+
+.improvementWrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    margin: auto 0;
+}
+
+.improvementText {
+    font-weight: bold;
+    font-size: 1.5rem !important;
+    margin-bottom: 16px;
+}
+
+.improvementEntryWrapper {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.improvementEntryWrapper .improvementEntry:first-of-type {
+    margin-right: 8px;
+}
+
+.improvementEntry {
+    max-width: calc(47% - 4px);
+}
+
+.improvementEntryTitle {
+    font-weight: bold;
+}
+
+.improvementTitle {
+}
+
+.improvementSubEntryWrapper {
+    display: flex;
+    justify-content: space-between;
+}
+
+.improvementSubEntryWrapper .improvementSubEntry:first-of-type {
+    margin-right: 4px;
+}
+
+.improvementSubEntry {
+    max-width: 45%;
+}
+
+.redistrictingSection {
+    width: 100%;
+}
+
+.goToLinks {
+    color: blue;
+    text-decoration: underline;
+}
+
+.marginTop {
+    margin-top: 1em;
+}
+
+.marginBottom {
+    margin-bottom: 1em;
+}
+
+.marginLeftAuto {
+    margin-left: auto;
+}
+
+.flex {
+    display: flex;
+}
+
+.justifyBetween {
+    justify-content: space-between;
+}
+
+.justifyAround {
+    justify-content: space-around;
+}
+
+.rowReverse {
+    flex-direction: row-reverse;
+}
+
+.textCenter {
+    text-align: center;
+}
+
+.textRight {
+    text-align: right;
+}
+
+.textGray {
+    color: #383838;
+}
+
+.textTeal {
+    color: var(--primary-teal);
+}
+
+.indent {
+    margin-left: 8px;
+    margin-right: 8px;
+}

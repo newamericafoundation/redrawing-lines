@@ -1,0 +1,63 @@
+.selectWrapper {
+    width: 100%;
+}
+
+.selectWrapper label {
+    display: block;
+    margin-left: 8px;
+}
+
+.selectBody {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    background-color: #fff;
+    border: 1px solid #a3a3a3;
+    border-radius: 4px;
+    font-family: inherit;
+    width: inherit;
+}
+
+.selectBody select {
+    font-family: inherit;
+    background-color: #fff;
+    color: inherit;
+    font-size: inherit;
+    padding: 0.5em;
+    padding-right: 2.5em;
+    border: 0;
+    margin: 0;
+    border-radius: inherit;
+    text-indent: 0.01px;
+    text-overflow: unset;
+    background: url('/assets/down-arrow.svg') no-repeat right center;
+    -moz-appearance: none !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    background-position-x: 95%;
+    width: 100%;
+    /* width: 211px; */
+}
+.selectBody select:open {
+    background: url('/assets/up-arrow.svg') no-repeat right center;
+    background-position-x: 95%;
+}
+
+.selectBody select:invalid {
+    color: #a3a3a3;
+}
+
+.selectBody select:disabled {
+    opacity: 0.5;
+}
+
+.selectBody select option {
+    color: #000;
+}
+
+.selectBody::before,
+.selectBody::after {
+    content: '';
+    position: absolute;
+    pointer-events: none;
+}

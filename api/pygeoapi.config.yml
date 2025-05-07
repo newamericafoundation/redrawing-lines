@@ -1,0 +1,194 @@
+server:
+  bind:
+    host: localhost #change to your hostname if running your own instance
+    port: 5000
+  url: ${PYGEOAPI_URL} #change to host URL  if running your own instance
+  mimetype: application/json; charset=UTF-8
+  encoding: utf-8
+  gzip: true
+  language: en-US
+  cors: true
+  pretty_print: true
+  limits:
+    default_items: 500
+    max_items: 10000
+  map:
+    url: https://tile.openstreetmap.org/{z}/{x}/{y}.png
+    attribution: '<a href="https://www.openstreetmap.org/copyright">© OpenStreetMap contributors</a>'
+
+logging:
+  level: ${PYGEOAPI_LOGLEVEL:-ERROR}
+
+metadata:
+  identification:
+    title: Redrawing the Lines
+    description: Redrawing the Lines
+    keywords:
+      - Redrawing the Lines
+      - New America
+    keywords_type: theme
+    terms_of_service: https://creativecommons.org/licenses/by/4.0/
+    url: https://github.com/cgs-earth/redrawing-the-lines
+  license:
+    name: CC-BY 4.0 license
+    url: https://creativecommons.org/licenses/by/4.0/
+  provider:
+    name: Center for Geospatial Solutions
+    url: https://cgsearth.org/
+  contact:
+    address: 113 Brattle St
+    city: Cambridge
+    stateorprovince: Massachussetts
+    postalcode: 02138
+    country: USA
+    email: internetofwater@lincolninst.edu
+    url: https://cgsearth.org
+    role: pointOfContact
+    name: Benjamin Webb
+
+sql-connection: &sql-connection
+  host: ${POSTGRES_HOST}
+  dbname: ${POSTGRES_DB}
+  user: ${POSTGRES_USER}
+  password: ${POSTGRES_PASSWORD}
+
+base-providers:
+  feature: &feature-conf
+    type: feature
+    name: PostgreSQL
+    data: *sql-connection
+    id_field: fid
+    geom_field: geom
+
+  tile: &tile-conf
+    type: tile
+    name: pygeoapi_plugins.provider.mvt_cache.MVTPostgresCache
+    mvt_table: mvt_cache 
+    data: *sql-connection
+    id_field: fid
+    geom_field: geom
+    options:
+      zoom:
+        min: 1
+        max: 16
+    format:
+      name: pbf
+      mimetype: application/vnd.mapbox-vector-tile
+
+resources:
+  school_districts_optim:
+    type: collection
+    title: Optimized School Districts
+    description: Optimized School Districts
+    keywords: &kwds
+      - Redrawing the Lines
+      - New America
+    links: &links
+      - type: text/html
+        rel: canonical
+        title: data source
+        hreflang: en-US
+        href: https://www.newamerica.org/
+    extents: &extents
+      spatial:
+        bbox: [-170, 15, -51, 72]
+        crs: http://www.opengis.net/def/crs/OGC/1.3/CRS84
+      temporal:
+        begin: null
+        end: null
+    providers:
+      - <<: *feature-conf
+        table: school_districts_optim
+      - <<: *tile-conf
+        table: school_districts_optim
+
+  school_districts_consol:
+    type: collection
+    title: Consolidated School Districts
+    description: Consolidated School Districts
+    keywords: *kwds
+    links: *links
+    extents: *extents
+    providers:
+      - <<: *feature-conf
+        table: school_districts_consol
+      - <<: *tile-conf
+        table: school_districts_consol
+
+  school_districts_sq:
+    type: collection
+    title: Status Quo School Districts
+    description: Status Quo School Districts
+    keywords: *kwds
+    links: *links
+    extents: *extents
+    providers:
+      - <<: *feature-conf
+        table: school_districts_sq
+      - <<: *tile-conf
+        table: school_districts_sq
+
+  school_districts_county:
+    type: collection
+    title: County Consolidated School Districts
+    description: County Consolidated School Districts
+    keywords: *kwds
+    links: *links
+    extents: *extents
+    providers:
+      - <<: *feature-conf
+        table: school_districts_county
+      - <<: *tile-conf
+        table: school_districts_county
+
+  state_metrics_optim:
+    type: collection
+    title: Optimized State Metrics
+    description: Optimized State Metrics
+    keywords: *kwds
+    links: *links
+    extents: *extents
+    providers:
+      - <<: *feature-conf
+        table: state_metrics_optim
+      - <<: *tile-conf
+        table: state_metrics_optim
+
+  state_metrics_sq:
+    type: collection
+    title: Status Quo State Metrics
+    description: Status Quo State Metrics
+    keywords: *kwds
+    links: *links
+    extents: *extents
+    providers:
+      - <<: *feature-conf
+        table: state_metrics_sq
+      - <<: *tile-conf
+        table: state_metrics_sq
+
+  state_metrics_consol:
+    type: collection
+    title: Consolidated State Metrics
+    description: Consolidated State Metrics
+    keywords: *kwds
+    links: *links
+    extents: *extents
+    providers:
+      - <<: *feature-conf
+        table: state_metrics_consol
+      - <<: *tile-conf
+        table: state_metrics_consol
+
+  state_metrics_county:
+    type: collection
+    title: County Consolidated State Metrics
+    description: County Consolidated State Metrics
+    keywords: *kwds
+    links: *links
+    extents: *extents
+    providers:
+      - <<: *feature-conf
+        table: state_metrics_county
+      - <<: *tile-conf
+        table: state_metrics_county

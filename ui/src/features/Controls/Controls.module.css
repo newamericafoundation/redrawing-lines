@@ -1,0 +1,55 @@
+.controls {
+    position: absolute;
+    z-index: 1;
+    top: 8px;
+    left: 8px;
+    background-color: #f7f4f2cc;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    border: 0.15em solid #515151;
+    border-radius: 4px;
+}
+
+.selectStack {
+    display: flex;
+    flex-direction: column;
+}
+
+.selectGroup {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+.selectGroup div:first-child {
+    margin-right: 16px;
+}
+
+.geocoderWrapper {
+    width: 239px;
+    margin-top: 23px;
+}
+.geocoderWrapper div {
+    width: 100%;
+
+    font-family: inherit;
+}
+
+.gradientContainer {
+    width: 100%;
+    margin: 0 auto;
+}
+
+.gradient {
+    width: 100%;
+    height: 35px;
+    border: 1px solid #000;
+}
+
+.gradientLabelContainer {
+    display: flex;
+    justify-content: space-between;
+}
+
+.gradientTitle {
+    margin-left: 8px;
+}
