@@ -12,9 +12,9 @@ export enum SourceId {
 }
 
 const makeTileURL = (sourceLayer: string) => {
-    const baseUrl = window.location.origin; // e.g., http://localhost:5173
-
-    return `${baseUrl}/api/collections/${sourceLayer}/tiles/WebMercatorQuad/{z}/{y}/{x}?f=mvt`;
+    return `${
+        import.meta.env.VITE_SOURCE
+    }/collections/${sourceLayer}/tiles/WebMercatorQuad/{z}/{y}/{x}?f=mvt`;
 };
 
 /**

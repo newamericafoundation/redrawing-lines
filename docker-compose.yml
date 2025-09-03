@@ -3,27 +3,39 @@ services:
     build:
       context: api
     env_file:
-      - default.env
+      - .env
     ports:
       - 5000:80
-    depends_on:
-      database:
-        condition: service_healthy
+    profiles:
+      - dev
+      - prod
 
   database:
     build:
       context: database
     env_file:
-      - default.env
+      - .env
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
+      test: ["CMD-SHELL", "pg_isready", "-U", "$POSTGRES_USER"]
       interval: 10s
       timeout: 5s
       retries: 5
+    profiles:
+      - dev
 
   ui:
     build:
       context: ui
       dockerfile: Dockerfile
+    profiles:
+      - prod
+
+  webserver:
+    build:
+      context: webserver
+      dockerfile: Dockerfile
     ports:
-      - 3000:3000
+      - 80:80
+      - 443:443
+    profiles:
+      - prod
