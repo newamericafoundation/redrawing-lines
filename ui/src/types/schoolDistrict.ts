@@ -67,7 +67,6 @@ export const schoolDistrDataVariableValues: SchoolDistrVariable[] = [
     SchoolDistrVariable.White,
     SchoolDistrVariable.Asian,
     SchoolDistrVariable.Latino,
-    SchoolDistrVariable.NonWhite,
 ];
 
 export type SchoolDistrictProperties = {

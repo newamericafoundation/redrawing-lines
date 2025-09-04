@@ -11,8 +11,9 @@ const getPrimaryLookupProperty = (model: Model) => {
         case Model.StatusQuo:
             return SchoolDistrVariable.GeoID;
         case Model.Optimized:
-        case Model.Consolidated:
             return SchoolDistrVariable.OptimizedId;
+        case Model.Consolidated:
+            return SchoolDistrVariable.ConsolidatedId;
         case Model.CountyConsolidated:
             return SchoolDistrVariable.CountyGeoId;
     }
@@ -24,9 +25,8 @@ const getComparisonLookupProperty = (model: Model) => {
             return SchoolDistrVariable.GeoID;
         case Model.Optimized:
         case Model.Consolidated:
-            return SchoolDistrVariable.OptimizedId;
         case Model.CountyConsolidated:
-            return SchoolDistrVariable.GeoID;
+            return SchoolDistrVariable.OptimizedId;
     }
 };
 

@@ -11,25 +11,21 @@ type Props = {
 export const StudentsOfColor: React.FC<Props> = (props) => {
     const { primary, comparison } = props;
 
-    const q1Primary =
-        primary.feature.properties[
-            StateLevelVariable.Q1StudentsOfColor
-        ].toFixed(1);
+    const q1Primary = Number(
+        primary.feature.properties[StateLevelVariable.Q1StudentsOfColor]
+    ).toFixed(1);
 
-    const q4Primary =
-        primary.feature.properties[
-            StateLevelVariable.Q4StudentsOfColor
-        ].toFixed(1);
+    const q4Primary = Number(
+        primary.feature.properties[StateLevelVariable.Q4StudentsOfColor]
+    ).toFixed(1);
 
-    const q1Comparison =
-        comparison.feature.properties[
-            StateLevelVariable.Q1StudentsOfColor
-        ].toFixed(1);
+    const q1Comparison = Number(
+        comparison.feature.properties[StateLevelVariable.Q1StudentsOfColor]
+    ).toFixed(1);
 
-    const q4Comparison =
-        comparison.feature.properties[
-            StateLevelVariable.Q4StudentsOfColor
-        ].toFixed(1);
+    const q4Comparison = Number(
+        comparison.feature.properties[StateLevelVariable.Q4StudentsOfColor]
+    ).toFixed(1);
 
     return (
         <div className={styles.improvementEntryWrapper}>

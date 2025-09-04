@@ -58,14 +58,14 @@ export type StateMetricProperties = {
     [StateLevelVariable.StateAcronym]: string;
 
     [StateLevelVariable.TheilFunding]: string;
-    [StateLevelVariable.TheilEconomic]: number;
-    [StateLevelVariable.ThielRacial]: number;
-    [StateLevelVariable.NumberOfDistr]: number;
+    [StateLevelVariable.TheilEconomic]: string;
+    [StateLevelVariable.ThielRacial]: string;
+    [StateLevelVariable.NumberOfDistr]: string;
 
-    [StateLevelVariable.Q1PropertyTax]: number;
-    [StateLevelVariable.Q4PropertyTax]: number;
-    [StateLevelVariable.Q1StudentsOfColor]: number;
-    [StateLevelVariable.Q4StudentsOfColor]: number;
-    [StateLevelVariable.Q1ChildPoverty]: number;
-    [StateLevelVariable.Q4ChildPoverty]: number;
+    [StateLevelVariable.Q1PropertyTax]: string;
+    [StateLevelVariable.Q4PropertyTax]: string;
+    [StateLevelVariable.Q1StudentsOfColor]: string;
+    [StateLevelVariable.Q4StudentsOfColor]: string;
+    [StateLevelVariable.Q1ChildPoverty]: string;
+    [StateLevelVariable.Q4ChildPoverty]: string;
 };

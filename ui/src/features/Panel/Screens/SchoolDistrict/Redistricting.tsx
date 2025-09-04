@@ -4,21 +4,19 @@ import { Typography } from 'src/components/Typography';
 import { SchoolDistrVariable } from 'src/types';
 
 type Props = {
+    primary: SchoolDistrictFeature;
     comparison: SchoolDistrictFeature;
 };
 
 export const Redistricting: React.FC<Props> = (props) => {
-    const { comparison } = props;
+    const { primary, comparison } = props;
 
     const sqTaxPerPupil = Math.round(
-        comparison.feature.properties[SchoolDistrVariable.StatusQuoTaxPerPupil]
+        primary.feature.properties[SchoolDistrVariable.TaxPerPupil]
     ).toLocaleString('en-us');
 
     const sqStatewideTaxPct =
-        100 -
-        comparison.feature.properties[
-            SchoolDistrVariable.StatusQuoTaxPctStatewide
-        ];
+        100 - primary.feature.properties[SchoolDistrVariable.TaxPctStatewide];
 
     const taxPerPupil = Math.round(
         comparison.feature.properties[SchoolDistrVariable.TaxPerPupil]

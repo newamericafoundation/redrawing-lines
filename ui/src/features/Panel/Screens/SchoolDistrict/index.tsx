@@ -84,7 +84,7 @@ const SchoolDistrict: React.FC = () => {
             </section>
             {primary && comparison && (
                 <>
-                    <Redistricting comparison={comparison} />
+                    <Redistricting primary={primary} comparison={comparison} />
                     <StudentsInPoverty
                         primary={primary}
                         comparison={comparison}

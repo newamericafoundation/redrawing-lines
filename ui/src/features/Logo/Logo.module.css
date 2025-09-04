@@ -1,28 +1,29 @@
-.indicatorsWrapper {
-    display: flex;
-    justify-content: space-between;
-
+.logoWrapper {
     position: absolute;
-    top: 8px;
-    left: 8px;
+    bottom: 29px;
     right: 49px;
 
     z-index: 1;
 }
 
 .outer {
-    background-color: #ffffffdf;
+    background-color: #ffffffef;
     border-radius: 8px;
+    padding: 4px;
 }
 
 .indicator {
     border: 1px solid var(--gray-one);
 
-    padding: 8px;
-    margin: 4px;
+    padding: 4px;
     border-radius: 8px;
 }
 
 .infoPanelOpen {
     right: 572px;
+}
+
+.image {
+    width: 150px;
+    height: auto;
 }

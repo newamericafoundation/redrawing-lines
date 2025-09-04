@@ -18,6 +18,7 @@ import { selectFeature } from 'src/features/Map/utils/selected';
 import { Polygon } from 'geojson';
 import Indicators from 'src/features/Indicators';
 import { WelcomeModal } from './features/WelcomeModal';
+import Logo from './features/Logo';
 
 function App() {
     const infoPanelOpen = useAppStore((state) => state.infoPanelOpen);
@@ -203,6 +204,7 @@ function App() {
                     accessToken={import.meta.env.VITE_MAPBOX_ACCESS_TOKEN}
                 />
             </div>
+            <Logo />
 
             {MemoizedPanel}
             {hoverFeature && otherFeature && (

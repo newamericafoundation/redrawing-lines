@@ -12,19 +12,19 @@ export const PropertyTax: React.FC<Props> = (props) => {
     const { primary, comparison } = props;
 
     const q1Primary = Math.round(
-        primary.feature.properties[StateLevelVariable.Q1PropertyTax]
+        Number(primary.feature.properties[StateLevelVariable.Q1PropertyTax])
     ).toLocaleString('en-us');
 
     const q4Primary = Math.round(
-        primary.feature.properties[StateLevelVariable.Q4PropertyTax]
+        Number(primary.feature.properties[StateLevelVariable.Q4PropertyTax])
     ).toLocaleString('en-us');
 
     const q1Comparison = Math.round(
-        comparison.feature.properties[StateLevelVariable.Q1PropertyTax]
+        Number(comparison.feature.properties[StateLevelVariable.Q1PropertyTax])
     ).toLocaleString('en-us');
 
     const q4Comparison = Math.round(
-        comparison.feature.properties[StateLevelVariable.Q4PropertyTax]
+        Number(comparison.feature.properties[StateLevelVariable.Q4PropertyTax])
     ).toLocaleString('en-us');
 
     return (
