@@ -1,6 +1,10 @@
 import { Feature, FeatureCollection, Geometry } from 'geojson';
 import { useEffect, useRef, useState } from 'react';
-import { SchoolDistrictProperties, SchoolDistrVariable } from 'src/types';
+import {
+    Model,
+    SchoolDistrictProperties,
+    SchoolDistrVariable,
+} from 'src/types';
 import useAppStore, { Which } from 'src/lib/appState';
 import dataService from 'src/services/init/data.init';
 import * as turf from '@turf/turf';
@@ -43,7 +47,42 @@ export const useSchoolDistrictData = (which: Which) => {
         };
     }, []);
 
+    const getComparisonVersion = () => {
+        switch (model) {
+            case Model.Consolidated:
+                return 'Consolidated';
+            case Model.Optimized:
+                return 'Optimized';
+            case Model.CountyConsolidated:
+                return 'County';
+        }
+    };
+
+    const shouldFetchSchoolDistricts = (stateAcronym: string): boolean => {
+        if (which === 'primary') {
+            return (
+                featureCollection.features.length === 0 ||
+                featureCollection.features[0].properties[
+                    SchoolDistrVariable.State
+                ].toLowerCase() !== stateAcronym.toLowerCase()
+            );
+        }
+
+        return (
+            featureCollection.features.length === 0 ||
+            featureCollection.features[0].properties[
+                SchoolDistrVariable.State
+            ].toLowerCase() !== stateAcronym.toLowerCase() ||
+            featureCollection.features[0].properties[
+                SchoolDistrVariable.Version
+            ] !== getComparisonVersion()
+        );
+    };
+
     const fetchSchoolDistricts = async (stateAcronym: string) => {
+        if (!shouldFetchSchoolDistricts(stateAcronym)) {
+            return featureCollection;
+        }
         try {
             setLoading(true);
             controller.current = new AbortController();

@@ -54,6 +54,10 @@ export const useStateMetricData = (which: Which) => {
     };
 
     const fetchStates = async () => {
+        if (which === 'primary' && featureCollection.features.length > 0) {
+            return featureCollection;
+        }
+
         try {
             setLoading(true);
             controller.current = new AbortController();
