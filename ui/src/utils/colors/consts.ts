@@ -16,7 +16,7 @@ export const PropertyColors: {
         | StateLevelDataVariable
         | string]?: FriendlyColorBrewerPalettes;
 } = {
-    [SchoolDistrVariable.Black]: FriendlyColorBrewerPalettes.OrangeRed,
+    [SchoolDistrVariable.Black]: FriendlyColorBrewerPalettes.Blues,
     [SchoolDistrVariable.Asian]: FriendlyColorBrewerPalettes.GreenBlue,
     [SchoolDistrVariable.White]: FriendlyColorBrewerPalettes.BlueGreen,
     [SchoolDistrVariable.Native]: FriendlyColorBrewerPalettes.PurpleBlueGreen,

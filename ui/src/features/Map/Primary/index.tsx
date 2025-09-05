@@ -397,7 +397,7 @@ const PrimaryMap: React.FC<Props> = (props) => {
             if (state) {
                 const selectedVariable = isSchoolDistrict
                     ? variable
-                    : SchoolDistrVariable.Black;
+                    : SchoolDistrVariable.AssessedValuePerPupil;
                 if (!isSchoolDistrict) {
                     setVariable(selectedVariable);
                 }

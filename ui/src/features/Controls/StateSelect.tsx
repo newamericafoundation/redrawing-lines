@@ -66,7 +66,7 @@ export const StateSelect: React.FC = () => {
             id="state-select"
             label="State"
             placeholder="Select a State"
-            value={stateAcronym}
+            value={stateAcronym ?? ''}
             options={options}
             onChange={handleStateChange}
             disabled={options.length === 0}

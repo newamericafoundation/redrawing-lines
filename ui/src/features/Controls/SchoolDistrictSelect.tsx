@@ -15,6 +15,9 @@ export const SchoolDistrictSelect: React.FC = () => {
 
     const state = useAppStore((state) => state.state);
     const schoolDistrict = useAppStore((state) => state.schoolDistrict);
+    const otherSchoolDistrict = useAppStore(
+        (state) => state.otherSchoolDistrict
+    );
     const setSchoolDistrict = useAppStore((state) => state.setSchoolDistrict);
 
     const { featureCollection, goToSchoolDistrict, findSchoolDistrict } =
@@ -68,7 +71,11 @@ export const SchoolDistrictSelect: React.FC = () => {
     };
 
     const schoolDistrictId =
-        schoolDistrict?.feature?.id ?? schoolDistrict?.feature?.properties?.id;
+        schoolDistrict?.which === 'primary'
+            ? schoolDistrict?.feature?.id ??
+              schoolDistrict?.feature?.properties?.id
+            : otherSchoolDistrict?.feature?.id ??
+              otherSchoolDistrict?.feature?.properties?.id;
 
     return (
         <Select
