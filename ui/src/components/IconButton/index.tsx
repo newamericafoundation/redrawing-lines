@@ -2,13 +2,15 @@ import React, { PropsWithChildren } from 'react';
 import styles from 'src/components/IconButton/IconButton.module.css';
 
 type Props = {
-    label: string;
+    label?: string;
+    ariaLabel?: string;
     onClick?: () => void;
     className?: string;
 };
 
 const IconButton: React.FC<PropsWithChildren<Props>> = ({
     label,
+    ariaLabel,
     onClick,
     className = '',
     children,
@@ -18,7 +20,7 @@ const IconButton: React.FC<PropsWithChildren<Props>> = ({
             type="button"
             onClick={onClick}
             className={`${styles.button} ${className}`}
-            aria-label={label}
+            aria-label={ariaLabel ?? label}
             title={label}
         >
             {children}

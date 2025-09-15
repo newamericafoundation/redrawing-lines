@@ -16,13 +16,64 @@
 }
 
 .indicator {
+    display: flex;
+    align-items: flex-start;
     border: 1px solid var(--gray-one);
 
     padding: 8px;
     margin: 4px;
     border-radius: 8px;
 }
+.indicator > svg {
+    width: 18px;
+    height: auto;
+    margin-left: 4px;
+}
 
 .infoPanelOpen {
     right: 572px;
+}
+
+.headerOffset {
+    top: 72px;
+}
+
+@media screen and (max-width: 1100px) {
+    .indicatorsWrapper {
+        position: relative;
+        top: 0;
+        left: 0;
+        right: 0;
+        background-color: var(--white);
+        border-bottom: 1px solid var(--gray-one);
+    }
+
+    .infoPanelOpen {
+        right: 0;
+    }
+
+    .outer {
+        background-color: unset;
+        border-radius: unset;
+    }
+
+    .outer:nth-child(1) {
+        border-right: 1px solid var(--gray-one);
+    }
+
+    .outer:nth-child(2) {
+        border-left: 1px solid var(--gray-one);
+    }
+
+    .indicator {
+        border: unset;
+        border-radius: unset;
+
+        padding: 0;
+        margin: 8px;
+    }
+
+    .indicator > svg {
+        display: none;
+    }
 }

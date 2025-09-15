@@ -110,7 +110,7 @@ export const getLayerConfig = (
                 layout: {},
                 paint: {
                     'fill-color': '#088',
-                    'fill-opacity': 0.5,
+                    'fill-opacity': 0.8,
                 },
             };
         case SubLayerId.StateMetricsSQBoundary:
@@ -137,7 +137,7 @@ export const getLayerConfig = (
                 },
                 paint: {
                     'fill-color': '#088',
-                    'fill-opacity': 0.5,
+                    'fill-opacity': 0.6,
                 },
             };
         case SubLayerId.SchoolDistictsSQBoundary:
@@ -168,7 +168,7 @@ export const getLayerConfig = (
                 ],
                 paint: {
                     'fill-color': '#515151',
-                    'fill-opacity': 0.5,
+                    'fill-opacity': 0.8,
                 },
             };
         case SubLayerId.Static_FilteredStatesBoundary:

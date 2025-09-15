@@ -30,10 +30,7 @@ export const ChildPovertyRate: React.FC<Props> = (props) => {
     return (
         <div className={styles.improvementEntryWrapper}>
             <div className={styles.improvementEntry}>
-                <Typography
-                    variant="h6"
-                    className={styles.improvementEntryTitle}
-                >
+                <Typography variant="h6" className={styles.boldText}>
                     <strong>Before redistricting:</strong>
                 </Typography>
                 <div className={styles.improvementSubEntryWrapper}>
@@ -60,10 +57,7 @@ export const ChildPovertyRate: React.FC<Props> = (props) => {
                 </div>
             </div>
             <div className={styles.improvementEntry}>
-                <Typography
-                    variant="h6"
-                    className={styles.improvementEntryTitle}
-                >
+                <Typography variant="h6" className={styles.boldText}>
                     <strong>After redistricting:</strong>
                 </Typography>
                 <div className={styles.improvementSubEntryWrapper}>

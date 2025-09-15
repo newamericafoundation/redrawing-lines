@@ -1,5 +1,5 @@
 import styles from 'src/features/Popups/Popups.module.css';
-import { InteractiveFeature } from 'src/lib/appState';
+import useAppStore, { InteractiveFeature } from 'src/lib/appState';
 import { State } from 'src/features/Popups/Static/State';
 import { SchoolDistrict } from 'src/features/Popups/Static/SchoolDistrict';
 
@@ -10,8 +10,14 @@ type Props = {
 export const StaticPopup: React.FC<Props> = (props) => {
     const { hoverFeature, otherFeature } = props;
 
+    const infoPanelOpen = useAppStore((state) => state.infoPanelOpen);
+
     return (
-        <div className={styles.static}>
+        <div
+            className={`${styles.static} ${
+                infoPanelOpen ? styles.infoPanelOpen : ''
+            }`}
+        >
             <div className={styles.border}>
                 {hoverFeature.level === 'state' &&
                     otherFeature.level === 'state' && (

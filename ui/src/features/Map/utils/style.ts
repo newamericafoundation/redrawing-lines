@@ -157,11 +157,13 @@ export const updateSchoolDistricts = async (
     model: Model,
     isMounted: boolean,
     fetchSchoolDistricts: (
-        stateAcronym: string
+        stateAcronym: string,
+        signal?: AbortSignal
     ) => Promise<
         FeatureCollection<Geometry, SchoolDistrictProperties> | undefined
     >,
-    callback: () => void
+    callback: () => void,
+    signal?: AbortSignal
 ) => {
     const propertyThreshold = getPropertyColorThreshhold(variable);
     const stateAcronym =
@@ -172,7 +174,10 @@ export const updateSchoolDistricts = async (
     let expression: ExpressionSpecification | null = null;
     if (propertyThreshold) {
         if (propertyThreshold === 'dynamic') {
-            const featureCollection = await fetchSchoolDistricts(stateAcronym);
+            const featureCollection = await fetchSchoolDistricts(
+                stateAcronym,
+                signal
+            );
 
             if (featureCollection) {
                 const features = featureCollection.features.filter(
@@ -217,17 +222,20 @@ export const updateStateMetrics = async (
     variable: StateLevelDataVariable,
     model: Model,
     isMounted: boolean,
-    fetchStates: () => Promise<
+    fetchStates: (
+        signal?: AbortSignal
+    ) => Promise<
         FeatureCollection<Geometry, StateMetricProperties> | undefined
     >,
-    callback: () => void
+    callback: () => void,
+    signal?: AbortSignal
 ) => {
     const propertyThreshold = getPropertyColorThreshhold(variable);
 
     let expression: ExpressionSpecification | null = null;
     if (propertyThreshold) {
         if (propertyThreshold === 'dynamic') {
-            const featureCollection = await fetchStates();
+            const featureCollection = await fetchStates(signal);
 
             if (featureCollection) {
                 const features = featureCollection.features.filter(

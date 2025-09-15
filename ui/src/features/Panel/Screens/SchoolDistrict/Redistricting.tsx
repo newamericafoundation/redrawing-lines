@@ -31,10 +31,7 @@ export const Redistricting: React.FC<Props> = (props) => {
             className={`${styles.improvementEntryWrapper} ${styles.marginTop}`}
         >
             <div className={styles.improvementEntry}>
-                <Typography
-                    variant="h6"
-                    className={styles.improvementEntryTitle}
-                >
+                <Typography variant="h6" className={styles.boldText}>
                     <strong>Before redistricting,</strong>
                 </Typography>
                 <Typography variant="body">
@@ -48,17 +45,14 @@ export const Redistricting: React.FC<Props> = (props) => {
                 </Typography>
                 <Typography variant="body-large">
                     {Math.abs(sqStatewideTaxPct).toFixed(1)}%{' '}
-                    {sqStatewideTaxPct >= 0 ? 'more' : 'less'}
+                    {sqStatewideTaxPct < 0 ? 'more' : 'less'}
                 </Typography>
                 <Typography variant="body">
                     than what a statewide 1% property tax would raise per pupil.
                 </Typography>
             </div>
             <div className={styles.improvementEntry}>
-                <Typography
-                    variant="h6"
-                    className={styles.improvementEntryTitle}
-                >
+                <Typography variant="h6" className={styles.boldText}>
                     <strong>After redistricting,</strong>
                 </Typography>
                 <Typography variant="body">
@@ -72,7 +66,7 @@ export const Redistricting: React.FC<Props> = (props) => {
                 </Typography>
                 <Typography variant="body-large">
                     {Math.abs(statewideTaxPct).toFixed(1)}%{' '}
-                    {statewideTaxPct >= 0 ? 'more' : 'less'}
+                    {statewideTaxPct < 0 ? 'more' : 'less'}
                 </Typography>
                 <Typography variant="body">
                     than what a statewide 1% property tax would raise per pupil.

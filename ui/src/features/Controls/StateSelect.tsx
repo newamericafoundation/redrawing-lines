@@ -13,10 +13,10 @@ export const StateSelect: React.FC = () => {
     >([]);
 
     const state = useAppStore((state) => state.state);
+    const otherState = useAppStore((state) => state.otherState);
     const setState = useAppStore((state) => state.setState);
     const setSchoolDistrict = useAppStore((state) => state.setSchoolDistrict);
 
-    // const { fetchSchoolDistricts } = useSchoolDistrictData('primary');
     const { featureCollection, goToState, findState } =
         useStateMetricData('primary');
 
@@ -59,7 +59,11 @@ export const StateSelect: React.FC = () => {
     };
 
     const stateAcronym =
-        state?.feature?.properties?.[StateLevelVariable.StateAcronym];
+        state?.which === 'primary'
+            ? state?.feature?.properties?.[StateLevelVariable.StateAcronym]
+            : otherState?.feature?.properties?.[
+                  StateLevelVariable.StateAcronym
+              ];
 
     return (
         <Select

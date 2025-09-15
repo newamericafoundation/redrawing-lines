@@ -129,7 +129,7 @@ export const getLayerConfig = (
                 layout: {},
                 paint: {
                     'fill-color': '#088',
-                    'fill-opacity': 0.5,
+                    'fill-opacity': 0.8,
                 },
             };
         case SubLayerId.StateMetricsSQBoundary:
@@ -156,7 +156,7 @@ export const getLayerConfig = (
                 },
                 paint: {
                     'fill-color': '#088',
-                    'fill-opacity': 0.5,
+                    'fill-opacity': 0.6,
                 },
             };
         case SubLayerId.SchoolDistrictsSQBoundary:
@@ -185,7 +185,7 @@ export const getLayerConfig = (
                 layout: { visibility: 'none' },
                 paint: {
                     'fill-color': '#088',
-                    'fill-opacity': 0.5,
+                    'fill-opacity': 0.8,
                 },
             };
         case SubLayerId.StateMetricsOptimBoundary:
@@ -212,7 +212,7 @@ export const getLayerConfig = (
                 },
                 paint: {
                     'fill-color': '#088',
-                    'fill-opacity': 0.5,
+                    'fill-opacity': 0.6,
                 },
             };
         case SubLayerId.SchoolDistrictsOptimBoundary:
@@ -241,7 +241,7 @@ export const getLayerConfig = (
                 layout: { visibility: 'none' },
                 paint: {
                     'fill-color': '#088',
-                    'fill-opacity': 0.5,
+                    'fill-opacity': 0.8,
                 },
             };
         case SubLayerId.StateMetricsConsolBoundary:
@@ -268,7 +268,7 @@ export const getLayerConfig = (
                 },
                 paint: {
                     'fill-color': '#088',
-                    'fill-opacity': 0.5,
+                    'fill-opacity': 0.6,
                 },
             };
         case SubLayerId.SchoolDistrictsConsolBoundary:
@@ -297,7 +297,7 @@ export const getLayerConfig = (
                 layout: { visibility: 'none' },
                 paint: {
                     'fill-color': '#088',
-                    'fill-opacity': 0.5,
+                    'fill-opacity': 0.8,
                 },
             };
         case SubLayerId.StateMetricsCountyBoundary:
@@ -324,7 +324,7 @@ export const getLayerConfig = (
                 },
                 paint: {
                     'fill-color': '#088',
-                    'fill-opacity': 0.5,
+                    'fill-opacity': 0.6,
                 },
             };
         case SubLayerId.SchoolDistrictsCountyBoundary:
@@ -368,7 +368,7 @@ export const getLayerConfig = (
                 ],
                 paint: {
                     'fill-color': '#515151',
-                    'fill-opacity': 0.5,
+                    'fill-opacity': 0.8,
                 },
             };
         case SubLayerId.Static_FilteredStatesBoundary:

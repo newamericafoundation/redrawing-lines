@@ -5,22 +5,34 @@ import { Landing } from 'src/features/Panel/Screens/Landing';
 import State from 'src/features/Panel/Screens/State';
 import SchoolDistrict from './Screens/SchoolDistrict';
 
-const Panel: React.FC = () => {
+type Props = {
+    showReportLayout: boolean;
+};
+
+const Panel: React.FC<Props> = (props) => {
+    const { showReportLayout } = props;
+
     const schoolDistrict = useAppStore((state) => state.schoolDistrict);
     const state = useAppStore((state) => state.state);
 
     return (
-        <div className={styles.infoPanel}>
-            <div className={styles.section} style={{ minHeight: 'unset' }}>
+        <div
+            className={`${styles.infoPanel} ${
+                showReportLayout ? '' : styles.headerOffset
+            }`}
+        >
+            <div className={styles.section}>
                 <Controls />
             </div>
-            {schoolDistrict ? (
-                <SchoolDistrict />
-            ) : state ? (
-                <State />
-            ) : (
-                <Landing />
-            )}
+            <div className={styles.section}>
+                {schoolDistrict ? (
+                    <SchoolDistrict />
+                ) : state ? (
+                    <State />
+                ) : (
+                    <Landing />
+                )}
+            </div>
         </div>
     );
 };

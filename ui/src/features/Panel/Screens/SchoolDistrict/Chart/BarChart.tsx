@@ -1,7 +1,14 @@
 import { FeatureCollection, Geometry } from 'geojson';
 import BarChart from 'src/components/Charts/BarChart';
 import useAppStore, { SchoolDistrictFeature } from 'src/lib/appState';
-import { SchoolDistrictProperties, SchoolDistrVariable } from 'src/types';
+import {
+    Model,
+    RD_MODEL_COLOR,
+    SchoolDistrictProperties,
+    SchoolDistrVariable,
+    STATEWIDE_COLOR,
+    STATUS_QUO_COLOR,
+} from 'src/types';
 import { aggregateByProperties } from 'src/utils/aggregateByProperty';
 import { getFriendlyName } from 'src/utils/friendlyNames';
 import { toWholeNumber } from 'src/utils/wholeNumber';
@@ -60,11 +67,30 @@ export const SchoolDistrictBarChart: React.FC<Props> = ({
     return (
         <BarChart
             series={[
-                { name: 'Status Quo', data: getDemographicData(primary) },
-                { name: 'State', data: stateData },
                 {
-                    name: getFriendlyName(model),
+                    name: 'Status Quo District',
+                    data: getDemographicData(primary),
+                    itemStyle: {
+                        color: STATUS_QUO_COLOR,
+                    },
+                },
+                {
+                    name: 'Statewide',
+                    data: stateData,
+                    itemStyle: {
+                        color: STATEWIDE_COLOR,
+                    },
+                },
+                {
+                    name: `${
+                        model === Model.Optimized
+                            ? getFriendlyName(model)
+                            : 'Merged'
+                    } District`,
                     data: getDemographicData(comparison),
+                    itemStyle: {
+                        color: RD_MODEL_COLOR,
+                    },
                 },
             ]}
             properties={[

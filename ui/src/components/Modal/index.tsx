@@ -1,6 +1,6 @@
-import styles from './Modal.module.css';
-import IconButton from '../IconButton';
-import { Typography } from '../Typography';
+import styles from 'src/components/Modal/Modal.module.css';
+import IconButton from 'src/components/IconButton';
+import { Typography } from 'src/components/Typography';
 import Close from 'src/assets/Close';
 
 type Props = {
@@ -40,7 +40,7 @@ const Modal: React.FC<Props> = ({
                                 {title}
                             </Typography>
                             <IconButton
-                                label="Leave State"
+                                label="Close Window"
                                 onClick={handleClose}
                                 className={styles.closeButton}
                             >

@@ -13,11 +13,14 @@ import { StudentsOfColor } from './Improvement/StudentsOfColor';
 import { toWholeNumber } from 'src/utils/wholeNumber';
 import { PropertyTax } from './Improvement/PropertyTax';
 import { ChildPovertyRate } from './Improvement/ChildPovertyRate';
+import Tippy from '@tippyjs/react';
+import Info from 'src/assets/Info';
 
 const State: React.FC = () => {
     const state = useAppStore((state) => state.state);
     const otherState = useAppStore((state) => state.otherState);
     const setState = useAppStore((state) => state.setState);
+    const setOtherState = useAppStore((state) => state.setOtherState);
     const model = useAppStore((state) => state.model);
 
     const { fetchStates } = useStateMetricData('comparison');
@@ -50,6 +53,7 @@ const State: React.FC = () => {
             }
         );
         setState(null);
+        setOtherState(null);
     };
 
     useEffect(() => {
@@ -113,7 +117,9 @@ const State: React.FC = () => {
             {state && otherState && (
                 <>
                     <div className={`${styles.flex} ${styles.infoWrapper}`}>
-                        <div className={`${styles.flex} ${styles.marginTop}`}>
+                        <div
+                            className={`${styles.flex} ${styles.marginTop} ${styles.justifyBetween}`}
+                        >
                             <div>
                                 <Typography
                                     variant="h3"
@@ -126,43 +132,62 @@ const State: React.FC = () => {
                                     )}
                                 </Typography>
                             </div>
-
-                            <IconButton
-                                label="Leave State"
-                                onClick={handleClick}
-                                className={styles.marginLeftAuto}
-                            >
-                                <Close className={styles.closeIcon} />
-                            </IconButton>
+                            <Tippy content="Return to national view">
+                                <div>
+                                    <IconButton
+                                        ariaLabel="Leave State"
+                                        onClick={handleClick}
+                                        className={styles.marginLeftAuto}
+                                    >
+                                        <Close className={styles.closeIcon} />
+                                    </IconButton>
+                                </div>
+                            </Tippy>
                         </div>
 
                         <hr />
                         <section className={styles.improvementWrapper}>
                             {fundImprovement && (
-                                <Typography
-                                    variant="body-large"
-                                    className={styles.improvementText}
-                                >
-                                    {fundImprovement}% more tax-base equality
-                                </Typography>
+                                <Tippy content="New districts have a more equal amount of assessed property valuation per pupil">
+                                    <div className={styles.improvementGroup}>
+                                        <Typography
+                                            variant="body-large"
+                                            className={styles.improvementText}
+                                        >
+                                            {fundImprovement}% more tax-base
+                                            equality
+                                        </Typography>
+                                        <Info />
+                                    </div>
+                                </Tippy>
                             )}
                             {segrImprovement && (
-                                <Typography
-                                    variant="body-large"
-                                    className={styles.improvementText}
-                                >
-                                    {segrImprovement}% greater racial
-                                    integration
-                                </Typography>
+                                <Tippy content="Student populations in new districts are more reflective of state racial demographics">
+                                    <div className={styles.improvementGroup}>
+                                        <Typography
+                                            variant="body-large"
+                                            className={styles.improvementText}
+                                        >
+                                            {segrImprovement}% greater racial
+                                            integration
+                                        </Typography>
+                                        <Info />
+                                    </div>
+                                </Tippy>
                             )}
                             {econImprovement && (
-                                <Typography
-                                    variant="body-large"
-                                    className={styles.improvementText}
-                                >
-                                    {econImprovement}% greater economic
-                                    integration
-                                </Typography>
+                                <Tippy content="Student poverty rates in new districts more closely match the state poverty rate">
+                                    <div className={styles.improvementGroup}>
+                                        <Typography
+                                            variant="body-large"
+                                            className={styles.improvementText}
+                                        >
+                                            {econImprovement}% greater economic
+                                            integration
+                                        </Typography>
+                                        <Info />
+                                    </div>
+                                </Tippy>
                             )}
                         </section>
                         {primary && comparison && (

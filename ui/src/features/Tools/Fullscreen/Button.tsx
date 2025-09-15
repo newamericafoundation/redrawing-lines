@@ -9,7 +9,7 @@ import FullscreenExit from 'src/assets/FullscreenExit';
 export const FullscreenButton: React.FC = () => {
     const [open, setOpen] = useState(false);
 
-    const onClick = () => {
+    const handleClick = () => {
         if (!document.fullscreenElement) {
             document.documentElement.requestFullscreen();
             setOpen(true);
@@ -25,7 +25,7 @@ export const FullscreenButton: React.FC = () => {
             title={!open ? 'Open Fullscreen' : 'Exit Fullscreen'}
             aria-label="Control Fullscreen"
             aria-disabled="false"
-            onClick={onClick}
+            onClick={handleClick}
             style={{ padding: '5px' }} // Styling must be inline
         >
             {!open ? <Fullscreen /> : <FullscreenExit />}

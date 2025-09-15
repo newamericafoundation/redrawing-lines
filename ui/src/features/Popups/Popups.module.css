@@ -1,7 +1,7 @@
 .static {
     position: absolute;
-    bottom: 16px;
-    left: 16px;
+    bottom: 29px;
+    right: 49px;
 
     background-color: #fff;
 
@@ -34,4 +34,8 @@
 .schoolDistrictPopupHeaderWrapper > *:first-child {
     font-weight: bold;
     margin-right: 8px;
+}
+
+.infoPanelOpen {
+    right: 572px;
 }

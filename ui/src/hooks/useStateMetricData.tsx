@@ -53,7 +53,7 @@ export const useStateMetricData = (which: Which) => {
         );
     };
 
-    const fetchStates = async () => {
+    const fetchStates = async (signal?: AbortSignal) => {
         if (which === 'primary' && featureCollection.features.length > 0) {
             return featureCollection;
         }
@@ -70,7 +70,7 @@ export const useStateMetricData = (which: Which) => {
             >(
                 source,
                 `&skipGeometry=true&limit=500`,
-                controller.current.signal
+                signal ?? controller.current.signal
             );
 
             // TODO: remove this filter after removing irrelevant features
@@ -110,7 +110,7 @@ export const useStateMetricData = (which: Which) => {
             >(
                 source,
                 `${StateLevelVariable.StateAcronym}=${state}&limit=500`
-                // TODO: add alternative path to this func for states
+                // TODO: find correct location to make this request from
                 // controller.current.signal
             );
 
@@ -118,10 +118,23 @@ export const useStateMetricData = (which: Which) => {
                 const feature = featureCollection.features[0];
                 const bounds = turf.bbox(feature) as LngLatBoundsLike;
 
-                map.fitBounds(bounds, {
-                    padding: 40,
-                    duration: 1000,
-                });
+                const _state = useAppStore.getState().state;
+                const otherState = useAppStore.getState().otherState;
+
+                const targetState =
+                    _state?.which === which ? _state : otherState;
+
+                if (
+                    targetState &&
+                    targetState.feature.properties[
+                        StateLevelVariable.StateAcronym
+                    ] === state
+                ) {
+                    map.fitBounds(bounds, {
+                        padding: 40,
+                        duration: 1000,
+                    });
+                }
             }
 
             setLoading(false);
@@ -133,74 +146,11 @@ export const useStateMetricData = (which: Which) => {
         }
     };
 
-    // const getDatasetsInBounds = useCallback((): FeatureCollection<
-    //     Geometry,
-    //     StateMetricProperties
-    // > => {
-    //     if (map && !currentState) {
-    //         // TODO: swap to actual layers for comparison
-    //         const layerId = getStateMetricsLayer(which, model);
-    //         const features = map.queryRenderedFeatures({
-    //             layers: [layerId],
-    //         });
-    //         const bounds = map.getBounds();
-    //         if (bounds) {
-    //             const southWest = bounds.getSouthWest();
-    //             const northEast = bounds.getNorthEast();
-    //             const southEast = bounds.getSouthEast();
-    //             const northWest = bounds.getNorthWest();
-
-    //             const bbox = turf.polygon([
-    //                 [
-    //                     [northEast.lng, northEast.lat],
-    //                     [northWest.lng, northWest.lat],
-    //                     [southWest.lng, southWest.lat],
-    //                     [southEast.lng, southEast.lat],
-    //                     [northEast.lng, northEast.lat],
-    //                 ],
-    //             ]);
-
-    //             const touchingFeatures = features
-    //                 .filter((feature) => turf.booleanIntersects(feature, bbox))
-    //                 .map((feature) => ({
-    //                     ...feature,
-    //                     geometry: null as unknown as Geometry,
-    //                 }));
-
-    //             const uniqueFeaturesMap = new Map();
-
-    //             touchingFeatures.forEach((feature) => {
-    //                 // TODO: swap name for better unique property
-    //                 // MVT feat missing id, multiple fid for same county
-    //                 const key =
-    //                     feature.id ??
-    //                     feature.properties?.[StateLevelVariable.StateAcronym];
-    //                 if (key && !uniqueFeaturesMap.has(key)) {
-    //                     uniqueFeaturesMap.set(key, feature);
-    //                 }
-    //             });
-
-    //             const uniqueFeatures = Array.from(uniqueFeaturesMap.values());
-    //             return turf.featureCollection(
-    //                 uniqueFeatures
-    //             ) as FeatureCollection<Geometry, StateMetricProperties>;
-    //         }
-    //     }
-
-    //     return featureCollection;
-    // }, [map, model, featureCollection, currentState]);
-
-    // const statesInBounds = useMemo(
-    //     () => (subscribe ? getDatasetsInBounds() : featureCollection),
-    //     [mapMoved]
-    // );
-
     return {
         featureCollection,
         fetchStates,
         findState,
         goToState,
         loading,
-        // statesInBounds,
     };
 };

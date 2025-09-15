@@ -1,24 +1,29 @@
 import Primary from 'src/features/Map/Primary';
 import Comparison from 'src/features/Map/Comparison';
 import { useMap } from 'src/contexts/MapContexts';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import useAppStore, { InteractiveFeature } from 'src/lib/appState';
 import { PRIMARY_MAP_ID } from 'src/features/Map/Primary/config';
 import { COMPARISON_MAP_ID } from 'src/features/Map/Comparison/config';
 import Panel from 'src/features/Panel';
 import { StaticPopup } from 'src/features/Popups/Static';
 
-import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
 import 'src/App.css';
 import 'src/embla.css';
+import 'tippy.js/dist/tippy.css';
 
-import Compare from 'mapbox-gl-compare';
 import { highlightFeature } from 'src/features/Map/utils/hover';
 import { selectFeature } from 'src/features/Map/utils/selected';
 import { Polygon } from 'geojson';
 import Indicators from 'src/features/Indicators';
-import { WelcomeModal } from './features/WelcomeModal';
-import Logo from './features/Logo';
+import { WelcomeModal } from 'src/features/WelcomeModal';
+import Logo from 'src/features/Logo';
+import { alignMaps } from 'src/features/Map/utils/sync';
+import {
+    ReactCompareSlider,
+    ReactCompareSliderHandle,
+} from 'react-compare-slider';
+import Header from 'src/features/Header';
 
 function App() {
     const infoPanelOpen = useAppStore((state) => state.infoPanelOpen);
@@ -32,8 +37,11 @@ function App() {
     );
     const state = useAppStore((state) => state.state);
     const otherState = useAppStore((state) => state.otherState);
-    const comparisonContainerRef = useRef(null);
-    const compareRef = useRef<Compare>(null);
+
+    const mapsSynced = useAppStore((state) => state.mapsSynced);
+    const setMapsSynced = useAppStore((state) => state.setMapsSynced);
+
+    const [showReportLayout, setShowReportLayout] = useState(true);
 
     const { map: primaryMap, root: primaryRoot } = useMap(PRIMARY_MAP_ID);
     const { map: comparisonMap, root: comparisonRoot } =
@@ -55,36 +63,16 @@ function App() {
             if (comparisonRoot) {
                 comparisonRoot.unmount();
             }
-
-            if (compareRef.current) {
-                compareRef.current.remove();
-            }
         };
     }, []);
 
     useEffect(() => {
-        if (!primaryMap || !comparisonMap || !comparisonContainerRef.current) {
+        if (!primaryMap || !comparisonMap) {
             return;
         }
 
-        const compare = new Compare(
-            primaryMap,
-            comparisonMap,
-            comparisonContainerRef.current
-        );
-
-        compareRef.current = compare;
-        compare.on('slideend', (e) => {
-            setSliderPosition(e.currentPosition);
-        });
+        alignMaps(primaryMap, comparisonMap, setMapsSynced);
     }, [primaryMap, comparisonMap]);
-
-    useEffect(() => {
-        if (!compareRef.current) {
-            return;
-        }
-        compareRef.current.setSlider(sliderPosition);
-    }, [sliderPosition]);
 
     useEffect(() => {
         if (!primaryMap || !comparisonMap) return;
@@ -184,37 +172,79 @@ function App() {
         }
     }, [infoPanelOpen]);
 
-    const MemoizedPanel = useMemo(
-        () => (infoPanelOpen ? <Panel /> : null),
-        [infoPanelOpen]
-    );
+    useEffect(() => {
+        const queryParams = new URLSearchParams(window.location.search);
+        const inReport = queryParams.get('inReport');
+
+        if (inReport === null) {
+            setShowReportLayout(false);
+        }
+    }, []);
+
+    const handlePositionChange = (position: number) => {
+        setSliderPosition(position);
+    };
 
     return (
-        <main>
-            <Indicators />
-            <div
-                id="comparison-container"
-                ref={comparisonContainerRef}
-                style={{ position: 'relative', height: '100vh' }}
-            >
-                <Primary
-                    accessToken={import.meta.env.VITE_MAPBOX_ACCESS_TOKEN}
-                />
-                <Comparison
-                    accessToken={import.meta.env.VITE_MAPBOX_ACCESS_TOKEN}
-                />
-            </div>
-            <Logo />
+        <>
+            <Header showReportLayout={showReportLayout} />
+            <main className={showReportLayout ? '' : 'showHeader'}>
+                <ReactCompareSlider
+                    handle={
+                        <ReactCompareSliderHandle
+                            buttonStyle={{
+                                backgroundColor: 'var(--primary-teal)',
+                            }}
+                        />
+                    }
+                    itemOne={
+                        <>
+                            <div
+                                id="loading-screen"
+                                style={{
+                                    display: mapsSynced ? 'none' : 'block',
+                                }}
+                            />
+                            <Primary
+                                accessToken={
+                                    import.meta.env.VITE_MAPBOX_ACCESS_TOKEN
+                                }
+                            />
+                        </>
+                    }
+                    itemTwo={
+                        <>
+                            <div
+                                id="loading-screen"
+                                style={{
+                                    display: mapsSynced ? 'none' : 'block',
+                                }}
+                            />
 
-            {MemoizedPanel}
-            {hoverFeature && otherFeature && (
-                <StaticPopup
-                    hoverFeature={hoverFeature}
-                    otherFeature={otherFeature}
+                            <Comparison
+                                accessToken={
+                                    import.meta.env.VITE_MAPBOX_ACCESS_TOKEN
+                                }
+                            />
+                        </>
+                    }
+                    onlyHandleDraggable
+                    position={sliderPosition}
+                    onPositionChange={handlePositionChange}
                 />
-            )}
-            <WelcomeModal />
-        </main>
+                <Indicators showReportLayout={showReportLayout} />
+
+                {infoPanelOpen && <Panel showReportLayout={showReportLayout} />}
+                {hoverFeature && otherFeature && (
+                    <StaticPopup
+                        hoverFeature={hoverFeature}
+                        otherFeature={otherFeature}
+                    />
+                )}
+                <Logo />
+                <WelcomeModal />
+            </main>
+        </>
     );
 }
 

@@ -17,6 +17,9 @@ export class DataService {
 
         const response = await fetch(url, {
             signal,
+            headers: {
+                Accept: 'application/json',
+            },
         });
 
         const results = await response.json();
@@ -37,6 +40,9 @@ export class DataService {
 
         const response = await fetch(url, {
             signal,
+            headers: {
+                Accept: 'application/json',
+            },
         });
 
         const results = await response.json();

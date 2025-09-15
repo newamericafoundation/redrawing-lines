@@ -14,6 +14,8 @@ export const filteredStates = [
     'MN',
     'SC',
     'ME',
+    'HI',
+    'DC',
 ];
 
 export const getStateFilter = (): FilterSpecification => {

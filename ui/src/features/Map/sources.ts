@@ -11,12 +11,6 @@ export enum SourceId {
     SchoolDistricts_CountyConsolidated = 'school_districts_county',
 }
 
-const makeTileURL = (sourceLayer: string) => {
-    return `${
-        import.meta.env.VITE_SOURCE
-    }/collections/${sourceLayer}/tiles/WebMercatorQuad/{z}/{y}/{x}?f=mvt`;
-};
-
 /**
  * Configurations for sources in the map. Supports GeoJSON, VectorTile, and Esri Feature Service sources
  *
@@ -28,9 +22,13 @@ export const sourceConfigs: SourceConfig[] = [
         type: Sources.VectorTile,
         definition: {
             type: 'vector',
-            tiles: [makeTileURL(SourceId.StateMetrics_StatusQuo)],
+            tiles: [
+                `${import.meta.env.VITE_SOURCE}/collections/${
+                    SourceId.StateMetrics_StatusQuo
+                }/tiles/WebMercatorQuad/{z}/{y}/{x}?f=mvt`,
+            ],
             minzoom: 1,
-            maxzoom: 15,
+            maxzoom: 10,
         },
     },
     {
@@ -38,9 +36,13 @@ export const sourceConfigs: SourceConfig[] = [
         type: Sources.VectorTile,
         definition: {
             type: 'vector',
-            tiles: [makeTileURL(SourceId.StateMetrics_Optimized)],
+            tiles: [
+                `${import.meta.env.VITE_SOURCE}/collections/${
+                    SourceId.StateMetrics_Optimized
+                }/tiles/WebMercatorQuad/{z}/{y}/{x}?f=mvt`,
+            ],
             minzoom: 1,
-            maxzoom: 15,
+            maxzoom: 10,
         },
     },
     {
@@ -48,9 +50,13 @@ export const sourceConfigs: SourceConfig[] = [
         type: Sources.VectorTile,
         definition: {
             type: 'vector',
-            tiles: [makeTileURL(SourceId.StateMetrics_Consolidated)],
+            tiles: [
+                `${import.meta.env.VITE_SOURCE}/collections/${
+                    SourceId.StateMetrics_Consolidated
+                }/tiles/WebMercatorQuad/{z}/{y}/{x}?f=mvt`,
+            ],
             minzoom: 1,
-            maxzoom: 15,
+            maxzoom: 10,
         },
     },
     {
@@ -58,9 +64,13 @@ export const sourceConfigs: SourceConfig[] = [
         type: Sources.VectorTile,
         definition: {
             type: 'vector',
-            tiles: [makeTileURL(SourceId.StateMetrics_CountyConsolidated)],
+            tiles: [
+                `${import.meta.env.VITE_SOURCE}/collections/${
+                    SourceId.StateMetrics_CountyConsolidated
+                }/tiles/WebMercatorQuad/{z}/{y}/{x}?f=mvt`,
+            ],
             minzoom: 1,
-            maxzoom: 15,
+            maxzoom: 10,
         },
     },
     {
@@ -68,9 +78,13 @@ export const sourceConfigs: SourceConfig[] = [
         type: Sources.VectorTile,
         definition: {
             type: 'vector',
-            tiles: [makeTileURL(SourceId.SchoolDistricts_StatusQuo)],
+            tiles: [
+                `${import.meta.env.VITE_SOURCE}/collections/${
+                    SourceId.SchoolDistricts_StatusQuo
+                }/tiles/WebMercatorQuad/{z}/{y}/{x}?f=mvt`,
+            ],
             minzoom: 1,
-            maxzoom: 15,
+            maxzoom: 10,
         },
     },
     {
@@ -78,9 +92,13 @@ export const sourceConfigs: SourceConfig[] = [
         type: Sources.VectorTile,
         definition: {
             type: 'vector',
-            tiles: [makeTileURL(SourceId.SchoolDistricts_Optimized)],
+            tiles: [
+                `${import.meta.env.VITE_SOURCE}/collections/${
+                    SourceId.SchoolDistricts_Optimized
+                }/tiles/WebMercatorQuad/{z}/{y}/{x}?f=mvt`,
+            ],
             minzoom: 1,
-            maxzoom: 15,
+            maxzoom: 10,
         },
     },
     {
@@ -88,9 +106,13 @@ export const sourceConfigs: SourceConfig[] = [
         type: Sources.VectorTile,
         definition: {
             type: 'vector',
-            tiles: [makeTileURL(SourceId.SchoolDistricts_Consolidated)],
+            tiles: [
+                `${import.meta.env.VITE_SOURCE}/collections/${
+                    SourceId.SchoolDistricts_Consolidated
+                }/tiles/WebMercatorQuad/{z}/{y}/{x}?f=mvt`,
+            ],
             minzoom: 1,
-            maxzoom: 15,
+            maxzoom: 10,
         },
     },
     {
@@ -98,9 +120,13 @@ export const sourceConfigs: SourceConfig[] = [
         type: Sources.VectorTile,
         definition: {
             type: 'vector',
-            tiles: [makeTileURL(SourceId.SchoolDistricts_CountyConsolidated)],
+            tiles: [
+                `${import.meta.env.VITE_SOURCE}/collections/${
+                    SourceId.SchoolDistricts_CountyConsolidated
+                }/tiles/WebMercatorQuad/{z}/{y}/{x}?f=mvt`,
+            ],
             minzoom: 1,
-            maxzoom: 15,
+            maxzoom: 10,
         },
     },
 ];

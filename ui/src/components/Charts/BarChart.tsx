@@ -29,6 +29,7 @@ echarts.use([
 type BarChartSeries = {
     name: string;
     data: number[];
+    itemStyle?: { color: string };
 };
 
 type Props = {
@@ -70,11 +71,7 @@ const BarChart = (props: Props) => {
                 bottom: '3%',
                 containLabel: true,
             },
-            legend: legend
-                ? {
-
-                  }
-                : undefined,
+            legend: legend ? {} : undefined,
             toolbox: {
                 feature: {
                     saveAsImage: {},

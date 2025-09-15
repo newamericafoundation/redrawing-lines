@@ -10,6 +10,8 @@ export enum SchoolDistrVariable {
     TotalChildren = 'childrn',
     AssessedValuePerPupil = 'av_pp',
 
+    PovertyRate = 'pvrty_r',
+
     StatewideTaxPerPupil = 'sttw___',
     StatusQuoTaxPerPupil = 'sq_tx__',
     StatusQuoTaxPctStatewide = 'sq_t___',
@@ -58,6 +60,7 @@ export type SchoolDistrDataVariable = Extract<
     | SchoolDistrVariable.NonWhite
     | SchoolDistrVariable.ChildrenInPoverty
     | SchoolDistrVariable.TotalChildren
+    | SchoolDistrVariable.PovertyRate
 >;
 
 export const schoolDistrDataVariableValues: SchoolDistrVariable[] = [
@@ -67,6 +70,7 @@ export const schoolDistrDataVariableValues: SchoolDistrVariable[] = [
     SchoolDistrVariable.White,
     SchoolDistrVariable.Asian,
     SchoolDistrVariable.Latino,
+    SchoolDistrVariable.PovertyRate,
 ];
 
 export type SchoolDistrictProperties = {
@@ -81,6 +85,7 @@ export type SchoolDistrictProperties = {
     [SchoolDistrVariable.NonWhite]: number;
     [SchoolDistrVariable.ChildrenInPoverty]: number;
     [SchoolDistrVariable.TotalChildren]: number;
+    [SchoolDistrVariable.PovertyRate]: number;
 
     [SchoolDistrVariable.StatewideTaxPerPupil]: number;
     [SchoolDistrVariable.StatusQuoTaxPerPupil]: number;
@@ -102,3 +107,7 @@ export type SchoolDistrictProperties = {
     [SchoolDistrVariable.ConsolidatedId]?: string;
     [SchoolDistrVariable.Version]?: string;
 };
+
+export const STATUS_QUO_COLOR = '#0d67ad';
+export const STATEWIDE_COLOR = '#8d4a9b';
+export const RD_MODEL_COLOR = '#c01e22';

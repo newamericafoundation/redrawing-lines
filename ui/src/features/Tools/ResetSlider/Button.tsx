@@ -1,4 +1,4 @@
-import Fullscreen from 'src/assets/Fullscreen';
+import Center from 'src/assets/Center';
 import useAppStore from 'src/lib/appState';
 
 /**
@@ -11,12 +11,13 @@ export const ResetSliderButton: React.FC = () => {
     return (
         <button
             type="button"
+            title="Reset Slider Position"
             aria-label="Reset Slider Position"
             aria-disabled="false"
             onClick={() => setSliderPosition(50)}
             style={{ padding: '5px' }} // Styling must be inline
         >
-            <Fullscreen />
+            <Center />
         </button>
     );
 };

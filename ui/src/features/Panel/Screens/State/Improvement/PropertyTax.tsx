@@ -30,10 +30,7 @@ export const PropertyTax: React.FC<Props> = (props) => {
     return (
         <div className={styles.improvementEntryWrapper}>
             <div className={styles.improvementEntry}>
-                <Typography
-                    variant="h6"
-                    className={styles.improvementEntryTitle}
-                >
+                <Typography variant="h6" className={styles.boldText}>
                     <strong>Before redistricting:</strong>
                 </Typography>
                 <div className={styles.improvementSubEntryWrapper}>
@@ -58,18 +55,12 @@ export const PropertyTax: React.FC<Props> = (props) => {
                         <Typography variant="body">on average</Typography>
                     </div>
                 </div>
-                <Typography
-                    variant="body-large"
-                    className={styles.improvementEntryTitle}
-                >
+                <Typography variant="body-large" className={styles.boldText}>
                     <strong>per pupil from a 1% property tax</strong>
                 </Typography>
             </div>
             <div className={styles.improvementEntry}>
-                <Typography
-                    variant="h6"
-                    className={styles.improvementEntryTitle}
-                >
+                <Typography variant="h6" className={styles.boldText}>
                     <strong>After redistricting:</strong>
                 </Typography>
                 <div className={styles.improvementSubEntryWrapper}>
@@ -94,10 +85,7 @@ export const PropertyTax: React.FC<Props> = (props) => {
                         <Typography variant="body">on average</Typography>
                     </div>
                 </div>
-                <Typography
-                    variant="body-large"
-                    className={styles.improvementEntryTitle}
-                >
+                <Typography variant="body-large" className={styles.boldText}>
                     <strong>per pupil from a 1% property tax</strong>
                 </Typography>
             </div>

@@ -7,7 +7,7 @@ import { basemaps } from 'components/Map/consts';
 import { BasemapId } from 'src/components/Map/types';
 import CustomControl from 'src/components/Map/tools/CustomControl';
 import { FullscreenButton } from 'src/features/Tools/Fullscreen/Button';
-import { ControlsButton } from 'src/features/Tools/Info/Button';
+import { ControlsButton } from 'src/features/Tools/Controls/Button';
 import { MapMouseEvent, Marker } from 'mapbox-gl';
 import { sourceConfigs } from 'src/features/Map/sources';
 import {
@@ -36,6 +36,8 @@ import {
 } from 'src/features/Map/utils/style';
 import { findSchoolDistrict } from 'src/features/Map/utils/findSchoolDistrict';
 import { COMPARISON_MAP_ID } from '../Comparison/config';
+import { RestartButton } from 'src/features/Tools/Restart/Button';
+import { ResetSliderButton } from 'src/features/Tools/ResetSlider/Button';
 
 const INITIAL_CENTER: [number, number] = [-98.5795, 39.8282];
 const INITIAL_ZOOM = 4;
@@ -139,6 +141,7 @@ const PrimaryMap: React.FC<Props> = (props) => {
                 level: 'school-district',
                 feature,
             });
+
             goToSchoolDistrict(schoolDistrict);
         }
     };
@@ -394,6 +397,12 @@ const PrimaryMap: React.FC<Props> = (props) => {
         const handleMapUpdate = () => {
             const isSchoolDistrict = isSchoolDistrictProperty(variable);
 
+            if (controller.current) {
+                controller.current.abort();
+            }
+
+            controller.current = new AbortController();
+
             if (state) {
                 const selectedVariable = isSchoolDistrict
                     ? variable
@@ -410,7 +419,8 @@ const PrimaryMap: React.FC<Props> = (props) => {
                     model,
                     isMounted.current,
                     fetchSchoolDistricts,
-                    () => setMapMoved(Date.now())
+                    () => setMapMoved(Date.now()),
+                    controller.current.signal
                 );
             } else {
                 let stateVariable = variable;
@@ -426,7 +436,8 @@ const PrimaryMap: React.FC<Props> = (props) => {
                     model,
                     isMounted.current,
                     fetchStates,
-                    () => setMapMoved(Date.now())
+                    () => setMapMoved(Date.now()),
+                    controller.current.signal
                 );
             }
         };
@@ -474,6 +485,17 @@ const PrimaryMap: React.FC<Props> = (props) => {
 
     useEffect(() => {
         if (!state || state.which === 'comparison') {
+            if (!state && map) {
+                map.fitBounds(
+                    [
+                        [-125.0011, 24.9493], // Southwest corner [lng, lat]
+                        [-66.9326, 49.5904], // Northeast corner [lng, lat]
+                    ],
+                    {
+                        padding: { left: 50, right: 50 },
+                    }
+                );
+            }
             return;
         }
         if (state.level === 'state') {
@@ -553,13 +575,23 @@ const PrimaryMap: React.FC<Props> = (props) => {
                         ),
                         position: 'top-right',
                     },
+                    {
+                        control: new CustomControl(
+                            (
+                                <>
+                                    <RestartButton />
+                                    <ResetSliderButton />
+                                </>
+                            )
+                        ),
+                        position: 'top-right',
+                    },
                 ]}
                 geocoder={{
                     bbox: [-135.70536, 20.04941, -58.49207, 51.40235], // limit to continental US
                     countries: 'us', // exclude non-US cities in bbox
                     placeholder: 'Search for a location',
                 }}
-                persist
             />
         </>
     );

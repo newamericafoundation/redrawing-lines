@@ -1,7 +1,9 @@
 .logoWrapper {
+    width: 170px;
+
     position: absolute;
-    bottom: 29px;
-    right: 49px;
+    bottom: 66px;
+    left: 11px;
 
     z-index: 1;
 }
@@ -26,4 +28,36 @@
 .image {
     width: 150px;
     height: auto;
+}
+
+@media screen and (max-width: 1100px) {
+    .logoWrapper {
+        width: unset;
+        position: relative;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        background-color: var(--white);
+        border-top: 1px solid var(--gray-one);
+    }
+
+    .infoPanelOpen {
+        right: 0;
+    }
+
+    .outer {
+        background-color: unset;
+        border-radius: unset;
+        padding: 0;
+    }
+
+    .indicator {
+        border: unset;
+        border-radius: unset;
+        padding: 8px;
+
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
 }

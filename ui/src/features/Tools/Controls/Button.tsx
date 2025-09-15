@@ -1,4 +1,3 @@
-import Fullscreen from 'src/assets/Fullscreen';
 import PanelClose from 'src/assets/PanelClose';
 import PanelOpen from 'src/assets/PanelOpen';
 import useAppStore from 'src/lib/appState';
@@ -20,7 +19,6 @@ export const ControlsButton: React.FC = () => {
             style={{ padding: '5px' }} // Styling must be inline
         >
             {infoPanelOpen ? <PanelClose /> : <PanelOpen />}
-            <Fullscreen />
         </button>
     );
 };

@@ -21,7 +21,7 @@ export const WelcomeModal: React.FC = () => {
 
     return (
         <Modal
-            title="Redrawing The Lines"
+            title="Redrawing the Lines"
             open={showWelcome}
             handleClose={handleClose}
             action={
@@ -34,15 +34,20 @@ export const WelcomeModal: React.FC = () => {
                 <Typography variant="h3" as="h2">
                     Welcome
                 </Typography>
-                <Typography variant="body">
-                    <strong>Redrawing The Lines</strong> explores ... lorem
-                    ipsum dolor sit amet, consectetur{' '}
-                    <strong>adipiscing</strong> elit. Cras mattis, enim eu
-                    placerat sagittis, risus augue porta dui, non{' '}
-                    <strong>maximus</strong> nulla ante nec diam.{' '}
-                    <strong>Integer</strong> in sagittis massa. In et lacinia
-                    felis. <strong>Donec</strong> sit amet turpis ac ante
-                    efficitur scelerisque.
+                <Typography variant="body-large">
+                    This interactive map compares current school district
+                    boundaries with new lines from the proposed redistricting
+                    model. Explore the data to see how redrawing school district
+                    boundaries could provide more diverse student populations
+                    with fairer access to local school funding in every state.
+                </Typography>
+                <br />
+                <Typography variant="body-large">
+                    Note: New districts were not simulated for Alaska, Kansas,
+                    Kentucky, Maine, Minnesota, New Mexico, or South Carolina,
+                    due to limitations in available property valuation data.
+                    Hawaii and the District of Columbia were excluded from this
+                    analysis, as each has only one school district.
                 </Typography>
             </section>
         </Modal>

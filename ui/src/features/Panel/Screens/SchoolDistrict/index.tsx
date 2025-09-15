@@ -11,6 +11,7 @@ import { createCleanLabelFunction } from 'src/utils/cleanLabels';
 import { useSchoolDistrictData } from 'src/hooks/useSchoolDistrictData';
 import { StudentsInPoverty } from './StudentsInPoverty';
 import Chart from './Chart';
+import Tippy from '@tippyjs/react';
 
 const SchoolDistrict: React.FC = () => {
     const schoolDistrict = useAppStore((state) => state.schoolDistrict);
@@ -18,6 +19,9 @@ const SchoolDistrict: React.FC = () => {
         (state) => state.otherSchoolDistrict
     );
     const setSchoolDistrict = useAppStore((state) => state.setSchoolDistrict);
+    const setOtherSchoolDistrict = useAppStore(
+        (state) => state.setOtherSchoolDistrict
+    );
     const state = useAppStore((state) => state.state);
 
     const [primary, setPrimary] = useState<SchoolDistrictFeature>();
@@ -65,6 +69,7 @@ const SchoolDistrict: React.FC = () => {
         }
         goToState(state.feature.properties[StateLevelVariable.StateAcronym]);
         setSchoolDistrict(null);
+        setOtherSchoolDistrict(null);
     };
 
     return (
@@ -76,11 +81,17 @@ const SchoolDistrict: React.FC = () => {
                     <Typography variant="h3" className={styles.textTeal}>
                         {title}
                     </Typography>
-                    <Typography variant="h4">Status Quo</Typography>
                 </div>
-                <IconButton label="Leave State" onClick={handleClick}>
-                    <Close className={styles.closeIcon} />
-                </IconButton>
+                <Tippy content="Return to state view">
+                    <div>
+                        <IconButton
+                            ariaLabel="Leave School District"
+                            onClick={handleClick}
+                        >
+                            <Close className={styles.closeIcon} />
+                        </IconButton>
+                    </div>
+                </Tippy>
             </section>
             {primary && comparison && (
                 <>

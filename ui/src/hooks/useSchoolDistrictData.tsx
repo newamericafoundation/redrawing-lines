@@ -79,7 +79,10 @@ export const useSchoolDistrictData = (which: Which) => {
         );
     };
 
-    const fetchSchoolDistricts = async (stateAcronym: string) => {
+    const fetchSchoolDistricts = async (
+        stateAcronym: string,
+        signal?: AbortSignal
+    ) => {
         if (!shouldFetchSchoolDistricts(stateAcronym)) {
             return featureCollection;
         }
@@ -94,7 +97,7 @@ export const useSchoolDistrictData = (which: Which) => {
             >(
                 source,
                 `skipGeometry=true&${SchoolDistrVariable.State}=${stateAcronym}&limit=10000`,
-                controller.current.signal
+                signal ?? controller.current.signal
             );
 
             if (isMounted.current) {
@@ -172,8 +175,25 @@ export const useSchoolDistrictData = (which: Which) => {
                 Feature<Geometry, SchoolDistrictProperties>
             >(source, String(schoolDistrict), '', controller.current.signal);
 
+            const _schoolDistrict = useAppStore.getState().schoolDistrict;
+            const otherSchoolDistrict =
+                useAppStore.getState().otherSchoolDistrict;
+
+            const targetSchoolDistrict =
+                _schoolDistrict?.which === which
+                    ? _schoolDistrict
+                    : otherSchoolDistrict;
+
             if (feature) {
-                fitFeatureBounds(feature);
+                // Check to make sure user hasnt deselected or chosen another school district
+                if (
+                    targetSchoolDistrict &&
+                    targetSchoolDistrict.feature.properties[
+                        SchoolDistrVariable.ID
+                    ] === schoolDistrict
+                ) {
+                    fitFeatureBounds(feature);
+                }
             } else {
                 console.warn(
                     `School district ${schoolDistrict} not found remotely.`
@@ -188,79 +208,6 @@ export const useSchoolDistrictData = (which: Which) => {
         }
     };
 
-    // const getDatasetsInBounds = useCallback((): FeatureCollection<
-    //     Geometry,
-    //     SchoolDistrictProperties
-    // > => {
-    //     if (map && state) {
-    //         // TODO: swap to actual layers for comparison
-    //         const layerId = getSchoolDistrictsLayer(which, model);
-    //         const features = map.queryRenderedFeatures({
-    //             layers: [layerId],
-    //         });
-
-    //         const bounds = map.getBounds();
-    //         if (bounds) {
-    //             const southWest = bounds.getSouthWest();
-    //             const northEast = bounds.getNorthEast();
-    //             const southEast = bounds.getSouthEast();
-    //             const northWest = bounds.getNorthWest();
-
-    //             const bbox = turf.polygon([
-    //                 [
-    //                     [northEast.lng, northEast.lat],
-    //                     [northWest.lng, northWest.lat],
-    //                     [southWest.lng, southWest.lat],
-    //                     [southEast.lng, southEast.lat],
-    //                     [northEast.lng, northEast.lat],
-    //                 ],
-    //             ]);
-
-    //             const touchingFeatures = features
-    //                 .filter((feature) => turf.booleanIntersects(feature, bbox))
-    //                 .map((feature) => ({
-    //                     ...feature,
-    //                     geometry: null as unknown as Geometry,
-    //                 }));
-
-    //             const uniqueFeaturesMap = new Map();
-
-    //             touchingFeatures.forEach((feature) => {
-    //                 // TODO: swap name for better unique property
-    //                 // MVT feat missing id, multiple fid for same county
-    //                 const key = feature.id ?? feature.properties?.name;
-    //                 if (key && !uniqueFeaturesMap.has(key)) {
-    //                     uniqueFeaturesMap.set(key, feature);
-    //                 }
-    //             });
-
-    //             const uniqueFeatures = Array.from(uniqueFeaturesMap.values());
-
-    //             if (isSchoolDistrictProperty(variable)) {
-    //                 const { rankedCollection } = rankFeaturesByValue(
-    //                     turf.featureCollection<
-    //                         Geometry,
-    //                         SchoolDistrictProperties
-    //                     >(uniqueFeatures),
-    //                     variable
-    //                 );
-    //                 return rankedCollection;
-    //             }
-    //             return turf.featureCollection<
-    //                 Geometry,
-    //                 SchoolDistrictProperties
-    //             >(uniqueFeatures);
-    //         }
-    //     }
-
-    //     return featureCollection;
-    // }, [map, model, featureCollection, state]);
-
-    // const schoolDistrictsInBounds = useMemo(
-    //     () => (subscribe ? getDatasetsInBounds() : featureCollection),
-    //     [mapMoved, state, featureCollection]
-    // );
-
     return {
         featureCollection,
         fetchSchoolDistricts,
@@ -268,6 +215,5 @@ export const useSchoolDistrictData = (which: Which) => {
         goToSchoolDistrict,
         locateSchoolDistrict,
         loading,
-        // schoolDistrictsInBounds,
     };
 };

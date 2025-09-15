@@ -62,6 +62,6 @@
     border-top: 1px solid #d1d5db;
     display: flex;
     align-items: center;
-    background-color: var(--color-primary-opaque);
+    background-color: var(--white);
     padding: 1rem;
 }

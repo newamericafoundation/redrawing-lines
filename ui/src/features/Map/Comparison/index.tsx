@@ -7,7 +7,8 @@ import { basemaps } from 'components/Map/consts';
 import { BasemapId } from 'src/components/Map/types';
 import CustomControl from 'src/components/Map/tools/CustomControl';
 import { FullscreenButton } from 'src/features/Tools/Fullscreen/Button';
-import { ControlsButton } from 'src/features/Tools/Info/Button';
+import { ControlsButton } from 'src/features/Tools/Controls/Button';
+import { RestartButton } from 'src/features/Tools/Restart/Button';
 import { sourceConfigs } from 'src/features/Map/sources';
 import {
     COMPARISON_MAP_ID,
@@ -37,6 +38,7 @@ import {
     updateStateMetrics,
 } from 'src/features/Map/utils/style';
 import { findSchoolDistrict } from 'src/features/Map/utils/findSchoolDistrict';
+import { ResetSliderButton } from 'src/features/Tools/ResetSlider/Button';
 
 const INITIAL_CENTER: [number, number] = [-98.5795, 39.8282];
 const INITIAL_ZOOM = 4;
@@ -224,6 +226,7 @@ const ComparisonMap: React.FC<Props> = (props) => {
 
     useEffect(() => {
         isMounted.current = true;
+        void fetchStates();
         return () => {
             controller.current?.abort();
             isMounted.current = false;
@@ -427,6 +430,12 @@ const ComparisonMap: React.FC<Props> = (props) => {
             return;
         }
 
+        if (controller.current) {
+            controller.current.abort();
+        }
+
+        controller.current = new AbortController();
+
         if (state && isSchoolDistrictProperty(variable)) {
             // School district
             void updateSchoolDistricts(
@@ -437,9 +446,11 @@ const ComparisonMap: React.FC<Props> = (props) => {
                 model,
                 isMounted.current,
                 fetchSchoolDistricts,
-                () => setMapMoved(Date.now())
+                () => setMapMoved(Date.now()),
+                controller.current.signal
             );
-        } else {
+        } else if (!isSchoolDistrictProperty(variable)) {
+            // State Level
             void updateStateMetrics(
                 'comparison',
                 map,
@@ -447,9 +458,9 @@ const ComparisonMap: React.FC<Props> = (props) => {
                 model,
                 isMounted.current,
                 fetchStates,
-                () => setMapMoved(Date.now())
+                () => setMapMoved(Date.now()),
+                controller.current.signal
             );
-            // State Level
         }
     }, [map, state, variable, comparisonActive, model]);
 
@@ -572,8 +583,18 @@ const ComparisonMap: React.FC<Props> = (props) => {
                         ),
                         position: 'top-right',
                     },
+                    {
+                        control: new CustomControl(
+                            (
+                                <>
+                                    <RestartButton />
+                                    <ResetSliderButton />
+                                </>
+                            )
+                        ),
+                        position: 'top-right',
+                    },
                 ]}
-                persist
             />
         </>
     );

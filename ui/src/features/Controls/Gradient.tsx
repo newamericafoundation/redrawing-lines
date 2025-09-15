@@ -2,7 +2,11 @@ import useAppStore from 'src/lib/appState';
 import styles from 'src/features/Controls/Controls.module.css';
 import { useEffect, useState } from 'react';
 import { getGradient } from 'src/utils/colors';
-import { getFriendlyName } from 'src/utils/friendlyNames';
+import {
+    getFriendlyName,
+    getLessLabel,
+    getMoreLabel,
+} from 'src/utils/friendlyNames';
 import { Typography } from 'src/components/Typography';
 
 export const Gradient: React.FC = () => {
@@ -26,10 +30,7 @@ export const Gradient: React.FC = () => {
         <>
             {colors.length > 0 && (
                 <div className={styles.gradientContainer}>
-                    <Typography
-                        variant="body-large"
-                        className={styles.gradientTitle}
-                    >
+                    <Typography variant="body-large">
                         {getFriendlyName(variable)}
                     </Typography>
                     <div
@@ -41,8 +42,12 @@ export const Gradient: React.FC = () => {
                         }}
                     ></div>
                     <div className={styles.gradientLabelContainer}>
-                        <span>Less</span>
-                        <span>More</span>
+                        <Typography variant="body">
+                            {getLessLabel(variable)}
+                        </Typography>
+                        <Typography variant="body">
+                            {getMoreLabel(variable)}
+                        </Typography>
                     </div>
                 </div>
             )}

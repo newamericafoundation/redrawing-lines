@@ -1,10 +1,18 @@
 import { FeatureCollection, Geometry } from 'geojson';
-import { SchoolDistrictFeature } from 'src/lib/appState';
-import { SchoolDistrictProperties, SchoolDistrVariable } from 'src/types';
+import useAppStore, { SchoolDistrictFeature } from 'src/lib/appState';
+import {
+    Model,
+    RD_MODEL_COLOR,
+    SchoolDistrictProperties,
+    SchoolDistrVariable,
+    STATEWIDE_COLOR,
+    STATUS_QUO_COLOR,
+} from 'src/types';
 import { aggregateByProperties } from 'src/utils/aggregateByProperty';
 import { toWholeNumber } from 'src/utils/wholeNumber';
 import styles from 'src/features/Panel/Panel.module.css';
 import { Typography } from 'src/components/Typography';
+import { getFriendlyName } from 'src/utils/friendlyNames';
 
 type Props = {
     primary: SchoolDistrictFeature;
@@ -26,6 +34,8 @@ export const StudentsInPoverty: React.FC<Props> = ({
     primaryFeatureCollection,
     comparison,
 }) => {
+    const model = useAppStore((state) => state.model);
+
     const sqPctStudentsInPoverty = getPovertyPercentage(
         primary.feature.properties
     );
@@ -54,27 +64,44 @@ export const StudentsInPoverty: React.FC<Props> = ({
         >
             <div className={styles.improvementEntry}>
                 <Typography variant="body">
-                    <strong>Current District:</strong>
+                    <strong>Status Quo District:</strong>
                 </Typography>
-                <Typography variant="body-large">
+                <Typography
+                    variant="body-large"
+                    className={styles.boldText}
+                    style={{ color: STATUS_QUO_COLOR }}
+                >
                     {sqPctStudentsInPoverty}%
                 </Typography>
                 <Typography variant="body">students in poverty</Typography>
             </div>
             <div className={styles.improvementEntry}>
                 <Typography variant="body">
-                    <strong>State:</strong>
+                    <strong>Statewide:</strong>
                 </Typography>
-                <Typography variant="body-large">
+                <Typography
+                    variant="body-large"
+                    className={styles.boldText}
+                    style={{ color: STATEWIDE_COLOR }}
+                >
                     {statePctStudentsInPoverty}%
                 </Typography>
                 <Typography variant="body">students in poverty</Typography>
             </div>
             <div className={styles.improvementEntry}>
                 <Typography variant="body">
-                    <strong>Proposed District:</strong>
+                    <strong>
+                        {model === Model.Optimized
+                            ? getFriendlyName(model)
+                            : 'Merged'}{' '}
+                        District:
+                    </strong>
                 </Typography>
-                <Typography variant="body-large">
+                <Typography
+                    variant="body-large"
+                    className={styles.boldText}
+                    style={{ color: RD_MODEL_COLOR }}
+                >
                     {pctStudentsInPoverty}%
                 </Typography>
                 <Typography variant="body">students in poverty</Typography>

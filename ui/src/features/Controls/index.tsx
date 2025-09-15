@@ -10,13 +10,13 @@ const Controls: React.FC = () => {
     return (
         <>
             <div className={styles.selectGroup}>
-                <StateSelect />
-                <SchoolDistrictSelect />
+                <VariableSelect />
+                <ModelSelect />
             </div>
             <hr />
             <div className={styles.selectGroup}>
-                <VariableSelect />
-                <ModelSelect />
+                <StateSelect />
+                <SchoolDistrictSelect />
             </div>
             <hr />
             <div className={styles.selectGroup}>

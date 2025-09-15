@@ -17,17 +17,18 @@ export const PropertyColors: {
         | string]?: FriendlyColorBrewerPalettes;
 } = {
     [SchoolDistrVariable.Black]: FriendlyColorBrewerPalettes.Blues,
-    [SchoolDistrVariable.Asian]: FriendlyColorBrewerPalettes.GreenBlue,
-    [SchoolDistrVariable.White]: FriendlyColorBrewerPalettes.BlueGreen,
-    [SchoolDistrVariable.Native]: FriendlyColorBrewerPalettes.PurpleBlueGreen,
-    [SchoolDistrVariable.Latino]: FriendlyColorBrewerPalettes.PurpleRed,
+    [SchoolDistrVariable.Asian]: FriendlyColorBrewerPalettes.Blues,
+    [SchoolDistrVariable.White]: FriendlyColorBrewerPalettes.Blues,
+    [SchoolDistrVariable.Native]: FriendlyColorBrewerPalettes.Blues,
+    [SchoolDistrVariable.Latino]: FriendlyColorBrewerPalettes.Blues,
     [SchoolDistrVariable.NonWhite]: FriendlyColorBrewerPalettes.Greens,
+    [SchoolDistrVariable.PovertyRate]: FriendlyColorBrewerPalettes.Greens,
     [SchoolDistrVariable.AssessedValuePerPupil]:
-        FriendlyColorBrewerPalettes.YellowGreenBlue,
+        FriendlyColorBrewerPalettes.OrangeRed,
 
-    [StateLevelVariable.TheilFunding]: FriendlyColorBrewerPalettes.BlueGreen,
-    [StateLevelVariable.TheilEconomic]: FriendlyColorBrewerPalettes.PurpleBlue,
-    [StateLevelVariable.ThielRacial]: FriendlyColorBrewerPalettes.YellowGreen,
+    [StateLevelVariable.TheilFunding]: FriendlyColorBrewerPalettes.OrangeRed,
+    [StateLevelVariable.TheilEconomic]: FriendlyColorBrewerPalettes.Greens,
+    [StateLevelVariable.ThielRacial]: FriendlyColorBrewerPalettes.BluePurple,
     [StateLevelVariable.NumberOfDistr]: FriendlyColorBrewerPalettes.OrangeRed,
 };
 
@@ -46,9 +47,10 @@ const PropertyColorThreshholds: {
     [SchoolDistrVariable.NonWhite]: 'dynamic',
     [SchoolDistrVariable.AssessedValue]: 'dynamic',
     [SchoolDistrVariable.AssessedValuePerPupil]: 'dynamic',
-    [StateLevelVariable.TheilFunding]: 'dynamic',
-    [StateLevelVariable.TheilEconomic]: 'dynamic',
-    [StateLevelVariable.ThielRacial]: 'dynamic',
+    [SchoolDistrVariable.PovertyRate]: 'dynamic',
+    [StateLevelVariable.TheilFunding]: [0.1, 0.15, 0.2, 0.25, 0.3, 0.6],
+    [StateLevelVariable.TheilEconomic]: [0.01, 0.03, 0.05, 0.07, 0.1],
+    [StateLevelVariable.ThielRacial]: [0.1, 0.15, 0.2, 0.25, 0.3, 0.6],
     [StateLevelVariable.NumberOfDistr]: 'dynamic',
 };
 
