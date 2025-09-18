@@ -4,6 +4,8 @@ server:
     port: 5000
   url: ${VITE_SOURCE} #change to host URL  if running your own instance
   mimetype: application/json; charset=UTF-8
+  logo: https://cdn.newamerica.org/static/logo-black.svg
+  icon: https://cdn.newamerica.org/static/favicon.ico
   encoding: utf-8
   gzip: true
   language: en-US
@@ -28,23 +30,23 @@ metadata:
       - New America
     keywords_type: theme
     terms_of_service: https://creativecommons.org/licenses/by/4.0/
-    url: https://github.com/cgs-earth/redrawing-the-lines
+    url: https://redrawingthelines.org
   license:
     name: CC-BY 4.0 license
     url: https://creativecommons.org/licenses/by/4.0/
   provider:
-    name: Center for Geospatial Solutions
-    url: https://cgsearth.org/
+    name: New America Foundation
+    url: https://newamerica.org/
   contact:
-    address: 113 Brattle St
-    city: Cambridge
-    stateorprovince: Massachussetts
-    postalcode: 02138
+    address: 740 15th Street NW, Suite 900
+    city: Washington
+    stateorprovince: DC
+    postalcode: 20005
     country: USA
-    email: internetofwater@lincolninst.edu
-    url: https://cgsearth.org
+    email: media@newamerica.org
+    url: https://newamerica.org
     role: pointOfContact
-    name: Benjamin Webb
+    name: New America
 
 sql-connection: &sql-connection
   host: ${POSTGRES_HOST}
