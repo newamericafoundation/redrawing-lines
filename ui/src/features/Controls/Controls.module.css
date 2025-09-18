@@ -20,13 +20,17 @@
     display: flex;
     justify-content: space-between;
 }
+
+.selectGroup:first-of-type {
+    margin-top: 16px;
+}
 .selectGroup div:first-child {
     margin-right: 16px;
 }
 
 .geocoderWrapper {
     width: 239px;
-    margin-top: 23px;
+    margin-top: 24px;
 }
 .geocoderWrapper div {
     width: 100%;
@@ -41,8 +45,9 @@
 
 .gradient {
     width: 100%;
-    height: 35px;
+    height: 34px;
     border: 1px solid #000;
+    border-radius: 4px;
 }
 
 .gradientLabelContainer {

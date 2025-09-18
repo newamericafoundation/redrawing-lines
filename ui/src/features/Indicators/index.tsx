@@ -5,7 +5,7 @@ import { getFriendlyName } from 'src/utils/friendlyNames';
 import { Model } from 'src/types';
 import Info from 'src/assets/Info';
 import Tippy from '@tippyjs/react';
-import { getTooltipContent } from 'src/features/Indicators/utils';
+import { getTooltipContent } from 'src/utils/tooltip';
 
 type Props = {
     showReportLayout: boolean;

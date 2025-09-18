@@ -14,6 +14,8 @@ import { getSchoolDistrictsSource } from 'src/hooks/utils';
 import { COMPARISON_MAP_ID } from 'src/features/Map/Comparison/config';
 import { LngLatBoundsLike } from 'mapbox-gl';
 import { toWKTPoint } from 'src/utils/wkt';
+import loadingManager from 'src/managers/Loading.init';
+import { LoadingType } from 'src/lib/session/types';
 
 export const useSchoolDistrictData = (which: Which) => {
     const model = useAppStore((state) => state.model);
@@ -86,6 +88,11 @@ export const useSchoolDistrictData = (which: Which) => {
         if (!shouldFetchSchoolDistricts(stateAcronym)) {
             return featureCollection;
         }
+
+        const loadingInstance = loadingManager.add(
+            'Fetching school districts',
+            LoadingType.SchoolDistrict
+        );
         try {
             setLoading(true);
             controller.current = new AbortController();
@@ -100,6 +107,7 @@ export const useSchoolDistrictData = (which: Which) => {
                 signal ?? controller.current.signal
             );
 
+            loadingManager.remove(loadingInstance);
             if (isMounted.current) {
                 setFeatureCollection(featureCollection);
                 setLoading(false);
@@ -110,10 +118,15 @@ export const useSchoolDistrictData = (which: Which) => {
                 console.error(error);
                 setLoading(false);
             }
+            loadingManager.remove(loadingInstance);
         }
     };
 
     const locateSchoolDistrict = async (center: [number, number]) => {
+        const loadingInstance = loadingManager.add(
+            'Locating School District',
+            LoadingType.SchoolDistrict
+        );
         try {
             setLoading(true);
             controller.current = new AbortController();
@@ -130,12 +143,15 @@ export const useSchoolDistrictData = (which: Which) => {
                 controller.current.signal
             );
 
+            loadingManager.remove(loadingInstance);
+
             return featureCollection;
         } catch (error) {
             if ((error as Error)?.name !== 'AbortError') {
                 console.error(error);
                 setLoading(false);
             }
+            loadingManager.remove(loadingInstance);
         }
     };
 
@@ -168,9 +184,12 @@ export const useSchoolDistrictData = (which: Which) => {
 
         const model = useAppStore.getState().model;
 
+        const loadingInstance = loadingManager.add(
+            'Navigating to school district',
+            LoadingType.SchoolDistrict
+        );
         try {
             const source = getSchoolDistrictsSource(which, model);
-
             const feature = await dataService.getItem<
                 Feature<Geometry, SchoolDistrictProperties>
             >(source, String(schoolDistrict), '', controller.current.signal);
@@ -188,9 +207,11 @@ export const useSchoolDistrictData = (which: Which) => {
                 // Check to make sure user hasnt deselected or chosen another school district
                 if (
                     targetSchoolDistrict &&
-                    targetSchoolDistrict.feature.properties[
+                    (targetSchoolDistrict.feature.properties[
                         SchoolDistrVariable.ID
-                    ] === schoolDistrict
+                    ] === schoolDistrict ||
+                        targetSchoolDistrict.feature[SchoolDistrVariable.ID] ===
+                            schoolDistrict)
                 ) {
                     fitFeatureBounds(feature);
                 }
@@ -199,10 +220,12 @@ export const useSchoolDistrictData = (which: Which) => {
                     `School district ${schoolDistrict} not found remotely.`
                 );
             }
+            loadingManager.remove(loadingInstance);
         } catch (error) {
             if ((error as Error)?.name !== 'AbortError') {
                 console.error('Failed to go to school district:', error);
             }
+            loadingManager.remove(loadingInstance);
         } finally {
             setLoading(false);
         }

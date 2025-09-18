@@ -28,61 +28,66 @@ export const ChildPovertyRate: React.FC<Props> = (props) => {
     ).toFixed(1);
 
     return (
-        <div className={styles.improvementEntryWrapper}>
-            <div className={styles.improvementEntry}>
-                <Typography variant="h6" className={styles.boldText}>
-                    <strong>Before redistricting:</strong>
-                </Typography>
-                <div className={styles.improvementSubEntryWrapper}>
-                    <div className={styles.improvementSubEntry}>
-                        <Typography variant="body">There were</Typography>
-                        <Typography variant="body-large">
-                            {q1Primary}% students in poverty
-                        </Typography>
-                        <Typography variant="body">
-                            on average in the 25% of districts serving the{' '}
-                            <strong>fewest</strong>.
-                        </Typography>
+        <>
+            <Typography variant="h5" className={styles.improvementEntryTitle}>
+                <strong>Changes in Poverty Distribution</strong>
+            </Typography>
+            <div className={styles.improvementEntryWrapper}>
+                <div className={styles.improvementEntry}>
+                    <Typography variant="h6">
+                        <strong>Before redistricting:</strong>
+                    </Typography>
+                    <div className={styles.improvementSubEntryWrapper}>
+                        <div className={styles.improvementSubEntry}>
+                            <Typography variant="body">There were</Typography>
+                            <Typography variant="body-large">
+                                {q1Primary}% students in poverty
+                            </Typography>
+                            <Typography variant="body">
+                                on average in the 25% of districts serving the{' '}
+                                <strong>fewest</strong>.
+                            </Typography>
+                        </div>
+                        <div className={styles.improvementSubEntry}>
+                            <Typography variant="body">There were</Typography>
+                            <Typography variant="body-large">
+                                {q4Primary}% students in poverty
+                            </Typography>
+                            <Typography variant="body">
+                                on average in the 25% of districts serving the{' '}
+                                <strong>most</strong>.
+                            </Typography>
+                        </div>
                     </div>
-                    <div className={styles.improvementSubEntry}>
-                        <Typography variant="body">There were</Typography>
-                        <Typography variant="body-large">
-                            {q4Primary}% students in poverty
-                        </Typography>
-                        <Typography variant="body">
-                            on average in the 25% of districts serving the{' '}
-                            <strong>most</strong>.
-                        </Typography>
+                </div>
+                <div className={styles.improvementEntry}>
+                    <Typography variant="h6">
+                        <strong>After redistricting:</strong>
+                    </Typography>
+                    <div className={styles.improvementSubEntryWrapper}>
+                        <div className={styles.improvementSubEntry}>
+                            <Typography variant="body">There were</Typography>
+                            <Typography variant="body-large">
+                                {q1Comparison}% students in poverty
+                            </Typography>
+                            <Typography variant="body">
+                                on average in the 25% of districts serving the{' '}
+                                <strong>fewest</strong>.
+                            </Typography>
+                        </div>
+                        <div className={styles.improvementSubEntry}>
+                            <Typography variant="body">There were</Typography>
+                            <Typography variant="body-large">
+                                {q4Comparison}% students in poverty
+                            </Typography>
+                            <Typography variant="body">
+                                on average in the 25% of districts serving the{' '}
+                                <strong>most</strong>.
+                            </Typography>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div className={styles.improvementEntry}>
-                <Typography variant="h6" className={styles.boldText}>
-                    <strong>After redistricting:</strong>
-                </Typography>
-                <div className={styles.improvementSubEntryWrapper}>
-                    <div className={styles.improvementSubEntry}>
-                        <Typography variant="body">There were</Typography>
-                        <Typography variant="body-large">
-                            {q1Comparison}% students in poverty
-                        </Typography>
-                        <Typography variant="body">
-                            on average in the 25% of districts serving the{' '}
-                            <strong>fewest</strong>.
-                        </Typography>
-                    </div>
-                    <div className={styles.improvementSubEntry}>
-                        <Typography variant="body">There were</Typography>
-                        <Typography variant="body-large">
-                            {q4Comparison}% students in poverty
-                        </Typography>
-                        <Typography variant="body">
-                            on average in the 25% of districts serving the{' '}
-                            <strong>most</strong>.
-                        </Typography>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </>
     );
 };

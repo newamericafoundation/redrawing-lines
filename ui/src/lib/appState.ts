@@ -107,7 +107,7 @@ const useAppStore = create<AppState>()((set) => ({
     setInfoPanelOpen: (infoPanelOpen) => set({ infoPanelOpen }),
     sliderPosition: 50,
     setSliderPosition: (sliderPosition) => set({ sliderPosition }),
-    initialMapLoad: false,
+    initialMapLoad: true,
     setInitialMapLoad: (initialMapLoad) => set({ initialMapLoad }),
     mapsSynced: false,
     setMapsSynced: (mapsSynced) => set({ mapsSynced }),

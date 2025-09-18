@@ -17,7 +17,7 @@ export const getLayerIds = (
             },
             district: {
                 fill: [PrimaryLayerId.SchoolDistrictsSQFill],
-                line: [PrimaryLayerId.SchoolDistictsSQBoundary],
+                line: [PrimaryLayerId.SchoolDistrictsSQBoundary],
             },
         };
 
@@ -65,7 +65,7 @@ export const getLayerIds = (
             ],
             line: [
                 PrimaryLayerId.StateMetricsSQBoundary,
-                PrimaryLayerId.SchoolDistictsSQBoundary,
+                PrimaryLayerId.SchoolDistrictsSQBoundary,
             ],
         };
 

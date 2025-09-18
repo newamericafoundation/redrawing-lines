@@ -28,67 +28,76 @@ export const PropertyTax: React.FC<Props> = (props) => {
     ).toLocaleString('en-us');
 
     return (
-        <div className={styles.improvementEntryWrapper}>
-            <div className={styles.improvementEntry}>
-                <Typography variant="h6" className={styles.boldText}>
-                    <strong>Before redistricting:</strong>
-                </Typography>
-                <div className={styles.improvementSubEntryWrapper}>
-                    <div className={styles.improvementSubEntry}>
-                        <Typography variant="body">
-                            The 25% of districts with the <strong>least</strong>{' '}
-                            property wealth would raise{' '}
-                        </Typography>
-                        <Typography variant="body-large">
-                            ${q1Primary}
-                        </Typography>
-                        <Typography variant="body">on average</Typography>
+        <>
+            <Typography variant="h5" className={styles.improvementEntryTitle}>
+                <strong>Changes in Tax Bases</strong>
+            </Typography>
+            <div className={styles.improvementEntryWrapper}>
+                <div className={styles.improvementEntry}>
+                    <Typography variant="h6">
+                        <strong>Before redistricting:</strong>
+                    </Typography>
+                    <div className={styles.improvementSubEntryWrapper}>
+                        <div className={styles.improvementSubEntry}>
+                            <Typography variant="body">
+                                The 25% of districts with the{' '}
+                                <strong>least</strong> property wealth would
+                                raise{' '}
+                            </Typography>
+                            <Typography variant="body-large">
+                                ${q1Primary}
+                            </Typography>
+                            <Typography variant="body">on average</Typography>
+                        </div>
+                        <div className={styles.improvementSubEntry}>
+                            <Typography variant="body">
+                                The 25% of districts with the{' '}
+                                <strong>most</strong> property wealth would
+                                raise{' '}
+                            </Typography>
+                            <Typography variant="body-large">
+                                ${q4Primary}
+                            </Typography>
+                            <Typography variant="body">on average</Typography>
+                        </div>
                     </div>
-                    <div className={styles.improvementSubEntry}>
-                        <Typography variant="body">
-                            The 25% of districts with the <strong>most</strong>{' '}
-                            property wealth would raise{' '}
-                        </Typography>
-                        <Typography variant="body-large">
-                            ${q4Primary}
-                        </Typography>
-                        <Typography variant="body">on average</Typography>
-                    </div>
+                    <Typography variant="body-large">
+                        <strong>per pupil from a 1% property tax</strong>
+                    </Typography>
                 </div>
-                <Typography variant="body-large" className={styles.boldText}>
-                    <strong>per pupil from a 1% property tax</strong>
-                </Typography>
-            </div>
-            <div className={styles.improvementEntry}>
-                <Typography variant="h6" className={styles.boldText}>
-                    <strong>After redistricting:</strong>
-                </Typography>
-                <div className={styles.improvementSubEntryWrapper}>
-                    <div className={styles.improvementSubEntry}>
-                        <Typography variant="body">
-                            The 25% of districts with the <strong>least</strong>{' '}
-                            property wealth would raise{' '}
-                        </Typography>
-                        <Typography variant="body-large">
-                            ${q1Comparison}
-                        </Typography>
-                        <Typography variant="body">on average</Typography>
+                <div className={styles.improvementEntry}>
+                    <Typography variant="h6">
+                        <strong>After redistricting:</strong>
+                    </Typography>
+                    <div className={styles.improvementSubEntryWrapper}>
+                        <div className={styles.improvementSubEntry}>
+                            <Typography variant="body">
+                                The 25% of districts with the{' '}
+                                <strong>least</strong> property wealth would
+                                raise{' '}
+                            </Typography>
+                            <Typography variant="body-large">
+                                ${q1Comparison}
+                            </Typography>
+                            <Typography variant="body">on average</Typography>
+                        </div>
+                        <div className={styles.improvementSubEntry}>
+                            <Typography variant="body">
+                                The 25% of districts with the{' '}
+                                <strong>most</strong> property wealth would
+                                raise{' '}
+                            </Typography>
+                            <Typography variant="body-large">
+                                ${q4Comparison}
+                            </Typography>
+                            <Typography variant="body">on average</Typography>
+                        </div>
                     </div>
-                    <div className={styles.improvementSubEntry}>
-                        <Typography variant="body">
-                            The 25% of districts with the <strong>most</strong>{' '}
-                            property wealth would raise{' '}
-                        </Typography>
-                        <Typography variant="body-large">
-                            ${q4Comparison}
-                        </Typography>
-                        <Typography variant="body">on average</Typography>
-                    </div>
+                    <Typography variant="body-large">
+                        <strong>per pupil from a 1% property tax</strong>
+                    </Typography>
                 </div>
-                <Typography variant="body-large" className={styles.boldText}>
-                    <strong>per pupil from a 1% property tax</strong>
-                </Typography>
             </div>
-        </div>
+        </>
     );
 };

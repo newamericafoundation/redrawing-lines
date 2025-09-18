@@ -1,24 +1,11 @@
 .logoWrapper {
-    width: 170px;
+    width: 190px;
 
     position: absolute;
-    bottom: 66px;
-    left: 11px;
+    bottom: 0px;
+    left: 104px;
 
     z-index: 1;
-}
-
-.outer {
-    background-color: #ffffffef;
-    border-radius: 8px;
-    padding: 4px;
-}
-
-.indicator {
-    border: 1px solid var(--gray-one);
-
-    padding: 4px;
-    border-radius: 8px;
 }
 
 .infoPanelOpen {
@@ -26,7 +13,7 @@
 }
 
 .image {
-    width: 150px;
+    width: 170px;
     height: auto;
 }
 
@@ -41,14 +28,12 @@
         border-top: 1px solid var(--gray-one);
     }
 
-    .infoPanelOpen {
-        right: 0;
+    .image {
+        width: 150px;
     }
 
-    .outer {
-        background-color: unset;
-        border-radius: unset;
-        padding: 0;
+    .infoPanelOpen {
+        right: 0;
     }
 
     .indicator {

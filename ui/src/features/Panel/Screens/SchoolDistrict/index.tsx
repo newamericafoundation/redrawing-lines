@@ -12,6 +12,8 @@ import { useSchoolDistrictData } from 'src/hooks/useSchoolDistrictData';
 import { StudentsInPoverty } from './StudentsInPoverty';
 import Chart from './Chart';
 import Tippy from '@tippyjs/react';
+import { PRIMARY_MAP_ID } from 'src/features/Map/Primary/config';
+import { useMap } from 'src/contexts/MapContexts';
 
 const SchoolDistrict: React.FC = () => {
     const schoolDistrict = useAppStore((state) => state.schoolDistrict);
@@ -30,6 +32,8 @@ const SchoolDistrict: React.FC = () => {
 
     const { featureCollection } = useSchoolDistrictData('primary');
     const { goToState } = useStateMetricData('primary');
+
+    const { geocoder } = useMap(PRIMARY_MAP_ID);
 
     useEffect(() => {
         if (!schoolDistrict || !otherSchoolDistrict) {
@@ -67,9 +71,14 @@ const SchoolDistrict: React.FC = () => {
         if (!state) {
             return;
         }
+
         goToState(state.feature.properties[StateLevelVariable.StateAcronym]);
         setSchoolDistrict(null);
         setOtherSchoolDistrict(null);
+
+        if (geocoder) {
+            geocoder.setInput('');
+        }
     };
 
     return (

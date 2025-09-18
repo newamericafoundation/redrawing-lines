@@ -10,6 +10,8 @@ import { getStateMetricsSource } from 'src/hooks/utils';
 import { COMPARISON_MAP_ID } from 'src/features/Map/Comparison/config';
 import { LngLatBoundsLike } from 'mapbox-gl';
 import { filteredStates } from 'src/features/Map/utils/filter';
+import loadingManager from 'src/managers/Loading.init';
+import { LoadingType } from 'src/lib/session/types';
 
 export const useStateMetricData = (which: Which) => {
     const model = useAppStore((state) => state.model);
@@ -57,6 +59,10 @@ export const useStateMetricData = (which: Which) => {
         if (which === 'primary' && featureCollection.features.length > 0) {
             return featureCollection;
         }
+        const loadingInstance = loadingManager.add(
+            'Fetching states',
+            LoadingType.State
+        );
 
         try {
             setLoading(true);
@@ -81,6 +87,7 @@ export const useStateMetricData = (which: Which) => {
                     )
             );
 
+            loadingManager.remove(loadingInstance);
             if (isMounted.current) {
                 setFeatureCollection(featureCollection);
                 setLoading(false);
@@ -91,6 +98,7 @@ export const useStateMetricData = (which: Which) => {
                 console.error(error);
                 setLoading(false);
             }
+            loadingManager.remove(loadingInstance);
         }
     };
 
@@ -99,6 +107,10 @@ export const useStateMetricData = (which: Which) => {
             console.error('goToState called without map instance');
             return;
         }
+        const loadingInstance = loadingManager.add(
+            'Navigating to state',
+            LoadingType.State
+        );
 
         try {
             setLoading(true);
@@ -138,11 +150,13 @@ export const useStateMetricData = (which: Which) => {
             }
 
             setLoading(false);
+            loadingManager.remove(loadingInstance);
         } catch (error) {
             if ((error as Error)?.name !== 'AbortError') {
                 console.error(error);
                 setLoading(false);
             }
+            loadingManager.remove(loadingInstance);
         }
     };
 

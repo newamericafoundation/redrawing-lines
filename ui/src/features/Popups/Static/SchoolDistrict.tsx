@@ -24,9 +24,15 @@ export const SchoolDistrict: React.FC<Props> = (props) => {
         }
 
         if (state) {
-            const title = createCleanLabelFunction(
-                state.feature.properties[StateLevelVariable.StateAcronym]
-            )(hoverFeature.feature.properties[SchoolDistrVariable.Name] ?? '');
+            let title = 'Modeled District';
+            if (hoverFeature.which === 'primary') {
+                title = createCleanLabelFunction(
+                    state.feature.properties[StateLevelVariable.StateAcronym]
+                )(
+                    hoverFeature.feature.properties[SchoolDistrVariable.Name] ??
+                        ''
+                );
+            }
 
             setTitle(title);
         }

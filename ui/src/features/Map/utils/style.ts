@@ -29,7 +29,7 @@ const modifyPrimarySchoolDistrictLayers = (
         ['get', SchoolDistrVariable.State],
         stateAcronym,
     ]);
-    map.setFilter(PrimaryLayerId.SchoolDistictsSQBoundary, [
+    map.setFilter(PrimaryLayerId.SchoolDistrictsSQBoundary, [
         '==',
         ['get', SchoolDistrVariable.State],
         stateAcronym,
@@ -50,12 +50,12 @@ const modifyPrimarySchoolDistrictLayers = (
         'none'
     );
     map.setLayoutProperty(
-        PrimaryLayerId.Static_FilteredStatesFill,
+        PrimaryLayerId.FilteredStatesFill,
         'visibility',
         'none'
     );
     map.setLayoutProperty(
-        PrimaryLayerId.Static_FilteredStatesBoundary,
+        PrimaryLayerId.FilteredStatesBoundary,
         'visibility',
         'none'
     );
@@ -65,7 +65,7 @@ const modifyPrimarySchoolDistrictLayers = (
         'visible'
     );
     map.setLayoutProperty(
-        PrimaryLayerId.SchoolDistictsSQBoundary,
+        PrimaryLayerId.SchoolDistrictsSQBoundary,
         'visibility',
         'visible'
     );
@@ -102,10 +102,7 @@ const modifyComparisonSchoolDistrictLayers = (
     ];
     map.setFilter(sdFillLayerId, stateFilter);
     map.setFilter(sdBoundaryLayerId, stateFilter);
-    map.setFilter(
-        ComparisonLayerId.Static_SchoolDistrictsBoundary,
-        stateFilter
-    );
+    map.setFilter(ComparisonLayerId.StaticSchoolDistrictsBoundary, stateFilter);
 
     map.setPaintProperty(sdFillLayerId, 'fill-color', expression);
 
@@ -119,12 +116,12 @@ const modifyComparisonSchoolDistrictLayers = (
         map.setLayoutProperty(layerId, 'visibility', 'none')
     );
     map.setLayoutProperty(
-        ComparisonLayerId.Static_FilteredStatesFill,
+        ComparisonLayerId.FilteredStatesFill,
         'visibility',
         'none'
     );
     map.setLayoutProperty(
-        ComparisonLayerId.Static_FilteredStatesBoundary,
+        ComparisonLayerId.FilteredStatesBoundary,
         'visibility',
         'none'
     );
@@ -265,7 +262,7 @@ export const updateStateMetrics = async (
                     'none'
                 );
                 map.setLayoutProperty(
-                    PrimaryLayerId.SchoolDistictsSQBoundary,
+                    PrimaryLayerId.SchoolDistrictsSQBoundary,
                     'visibility',
                     'none'
                 );
@@ -281,12 +278,12 @@ export const updateStateMetrics = async (
                     'visible'
                 );
                 map.setLayoutProperty(
-                    PrimaryLayerId.Static_FilteredStatesFill,
+                    PrimaryLayerId.FilteredStatesFill,
                     'visibility',
                     'visible'
                 );
                 map.setLayoutProperty(
-                    PrimaryLayerId.Static_FilteredStatesBoundary,
+                    PrimaryLayerId.FilteredStatesBoundary,
                     'visibility',
                     'visible'
                 );
@@ -320,12 +317,12 @@ export const updateStateMetrics = async (
                     map.setLayoutProperty(layerId, 'visibility', 'none')
                 );
                 map.setLayoutProperty(
-                    ComparisonLayerId.Static_FilteredStatesFill,
+                    ComparisonLayerId.FilteredStatesFill,
                     'visibility',
                     'visible'
                 );
                 map.setLayoutProperty(
-                    ComparisonLayerId.Static_FilteredStatesBoundary,
+                    ComparisonLayerId.FilteredStatesBoundary,
                     'visibility',
                     'visible'
                 );

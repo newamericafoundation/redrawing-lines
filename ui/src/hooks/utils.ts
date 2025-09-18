@@ -39,7 +39,7 @@ const getSchoolDistrictsComparisonLayer = (model: Model) => {
 
 export const getSchoolDistrictsLayer = (which: Which, model: Model) => {
     return which === 'primary'
-        ? PrimaryLayerId.SchoolDistictsSQBoundary
+        ? PrimaryLayerId.SchoolDistrictsSQBoundary
         : getSchoolDistrictsComparisonLayer(model);
 };
 

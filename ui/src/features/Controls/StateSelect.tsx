@@ -3,6 +3,8 @@ import { Select } from 'src/components/Select';
 import useAppStore from 'src/lib/appState';
 import { StateLevelVariable } from 'src/types';
 import { useStateMetricData } from 'src/hooks/useStateMetricData';
+import { useMap } from 'src/contexts/MapContexts';
+import { PRIMARY_MAP_ID } from '../Map/Primary/config';
 
 export const StateSelect: React.FC = () => {
     const [options, setOptions] = useState<
@@ -16,9 +18,14 @@ export const StateSelect: React.FC = () => {
     const otherState = useAppStore((state) => state.otherState);
     const setState = useAppStore((state) => state.setState);
     const setSchoolDistrict = useAppStore((state) => state.setSchoolDistrict);
+    const setOtherSchoolDistrict = useAppStore(
+        (state) => state.setOtherSchoolDistrict
+    );
 
     const { featureCollection, goToState, findState } =
         useStateMetricData('primary');
+
+    const { geocoder } = useMap(PRIMARY_MAP_ID);
 
     useEffect(() => {
         if (featureCollection.features.length > 0) {
@@ -53,7 +60,16 @@ export const StateSelect: React.FC = () => {
                     feature: state,
                 });
                 setSchoolDistrict(null);
-                goToState(id);
+                setOtherSchoolDistrict(null);
+                void goToState(id);
+
+                if (geocoder) {
+                    try {
+                        geocoder.setInput('');
+                    } catch (error) {
+                        console.error(error);
+                    }
+                }
             }
         }
     };

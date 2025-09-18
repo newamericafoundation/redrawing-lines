@@ -4,6 +4,8 @@ import useAppStore from 'src/lib/appState';
 import { SchoolDistrVariable, StateLevelVariable } from 'src/types';
 import { useSchoolDistrictData } from 'src/hooks/useSchoolDistrictData';
 import { createCleanLabelFunction } from 'src/utils/cleanLabels';
+import { useMap } from 'src/contexts/MapContexts';
+import { PRIMARY_MAP_ID } from '../Map/Primary/config';
 
 export const SchoolDistrictSelect: React.FC = () => {
     const [options, setOptions] = useState<
@@ -22,6 +24,8 @@ export const SchoolDistrictSelect: React.FC = () => {
 
     const { featureCollection, goToSchoolDistrict, findSchoolDistrict } =
         useSchoolDistrictData('primary');
+
+    const { geocoder } = useMap(PRIMARY_MAP_ID);
 
     const cleanLabel = useMemo(
         () =>
@@ -65,7 +69,15 @@ export const SchoolDistrictSelect: React.FC = () => {
                     level: 'school-district',
                     feature: schoolDistrict,
                 });
-                goToSchoolDistrict(id);
+                void goToSchoolDistrict(id);
+
+                if (geocoder) {
+                    try {
+                        geocoder.setInput('');
+                    } catch (error) {
+                        console.error(error);
+                    }
+                }
             }
         }
     };

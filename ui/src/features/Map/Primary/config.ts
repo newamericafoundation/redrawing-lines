@@ -13,8 +13,7 @@ import {
 import { basemaps } from 'components/Map/consts';
 import { SourceId } from 'src/features/Map/sources';
 import { Root } from 'react-dom/client';
-import { showSchoolDistrictPopup } from 'src/features/Map/utils/popup';
-import { filteredStates, getStateFilter } from '../utils/filter';
+import { filteredStates, getStateFilter } from 'src/features/Map/utils/filter';
 import { StateLevelVariable } from 'src/types';
 
 export const PRIMARY_MAP_ID = 'primary-map';
@@ -24,16 +23,19 @@ export const BASEMAP = basemaps[BasemapId.Dark];
 export enum LayerId {
     StateMetricsSQ = 'pri-state-metrics-status-quo',
     StatusQuoSchoolDistricts = 'pri-school-districts-status-quo',
-    Static_FilteredStates = 'pri-static-filtered-states',
+    FilteredStates = 'pri-static-filtered-states',
+    NegativeSpaceStates = 'pri-negative-space-states',
 }
 
 export enum SubLayerId {
     StateMetricsSQFill = 'pri-state-metrics-status-quo-fill',
     StateMetricsSQBoundary = 'pri-state-metrics-status-quo-boundary',
     SchoolDistrictsSQFill = 'pri-school-districts-status-quo-fill',
-    SchoolDistictsSQBoundary = 'pri-school-districts-status-quo-boundary',
-    Static_FilteredStatesFill = 'pri-static-filtered-states-fill',
-    Static_FilteredStatesBoundary = 'pri-static-filtered-states-boundary',
+    SchoolDistrictsSQBoundary = 'pri-school-districts-status-quo-boundary',
+    FilteredStatesFill = 'pri-static-filtered-states-fill',
+    FilteredStatesBoundary = 'pri-static-filtered-states-boundary',
+    NegativeSpaceStatesFill = 'pri-negative-space-states-fill',
+    NegativeSpaceStatesBoundary = 'pri-negative-space-states-boundary',
 }
 
 export const allLayerIds = [];
@@ -110,7 +112,7 @@ export const getLayerConfig = (
                 layout: {},
                 paint: {
                     'fill-color': '#088',
-                    'fill-opacity': 0.8,
+                    'fill-opacity': 0.7,
                 },
             };
         case SubLayerId.StateMetricsSQBoundary:
@@ -137,12 +139,12 @@ export const getLayerConfig = (
                 },
                 paint: {
                     'fill-color': '#088',
-                    'fill-opacity': 0.6,
+                    'fill-opacity': 0.7,
                 },
             };
-        case SubLayerId.SchoolDistictsSQBoundary:
+        case SubLayerId.SchoolDistrictsSQBoundary:
             return {
-                id: SubLayerId.SchoolDistictsSQBoundary,
+                id: SubLayerId.SchoolDistrictsSQBoundary,
                 type: LayerType.Line,
                 source: SourceId.SchoolDistricts_StatusQuo,
                 'source-layer': SourceId.SchoolDistricts_StatusQuo,
@@ -155,9 +157,9 @@ export const getLayerConfig = (
                     'line-opacity': 1,
                 },
             };
-        case SubLayerId.Static_FilteredStatesFill:
+        case SubLayerId.FilteredStatesFill:
             return {
-                id: SubLayerId.Static_FilteredStatesFill,
+                id: SubLayerId.FilteredStatesFill,
                 type: LayerType.Fill,
                 source: SourceId.StateMetrics_StatusQuo,
                 'source-layer': SourceId.StateMetrics_StatusQuo,
@@ -168,12 +170,12 @@ export const getLayerConfig = (
                 ],
                 paint: {
                     'fill-color': '#515151',
-                    'fill-opacity': 0.8,
+                    'fill-opacity': 0.7,
                 },
             };
-        case SubLayerId.Static_FilteredStatesBoundary:
+        case SubLayerId.FilteredStatesBoundary:
             return {
-                id: SubLayerId.Static_FilteredStatesBoundary,
+                id: SubLayerId.FilteredStatesBoundary,
                 type: LayerType.Line,
                 source: SourceId.StateMetrics_StatusQuo,
                 'source-layer': SourceId.StateMetrics_StatusQuo,
@@ -182,6 +184,34 @@ export const getLayerConfig = (
                     ['get', StateLevelVariable.StateAcronym],
                     ['literal', filteredStates],
                 ],
+                paint: {
+                    'line-color': '#000',
+                    'line-width': 1,
+                },
+            };
+        case SubLayerId.NegativeSpaceStatesFill:
+            return {
+                id: SubLayerId.NegativeSpaceStatesFill,
+                type: LayerType.Fill,
+                source: SourceId.StateMetrics_StatusQuo,
+                'source-layer': SourceId.StateMetrics_StatusQuo,
+                layout: {
+                    visibility: 'none',
+                },
+                paint: {
+                    'fill-color': '#515151',
+                    'fill-opacity': 0.001,
+                },
+            };
+        case SubLayerId.NegativeSpaceStatesBoundary:
+            return {
+                id: SubLayerId.NegativeSpaceStatesBoundary,
+                type: LayerType.Line,
+                source: SourceId.StateMetrics_StatusQuo,
+                'source-layer': SourceId.StateMetrics_StatusQuo,
+                layout: {
+                    visibility: 'none',
+                },
                 paint: {
                     'line-color': '#000',
                     'line-width': 1,
@@ -204,19 +234,35 @@ export const getLayerHoverFunction = (
         container: HTMLDivElement
     ) => {
         switch (id) {
-            case SubLayerId.Static_FilteredStatesFill:
+            case SubLayerId.SchoolDistrictsSQFill:
+                return () => {
+                    map.getCanvas().style.cursor = 'pointer';
+                };
+            case SubLayerId.StateMetricsSQFill:
+                return () => {
+                    map.getCanvas().style.cursor = 'pointer';
+                };
+            case SubLayerId.FilteredStatesFill:
                 return () => {
                     map.getCanvas().style.cursor = 'not-allowed';
                 };
-            case SubLayerId.SchoolDistrictsSQFill:
+            case SubLayerId.NegativeSpaceStatesFill:
                 return (e) => {
-                    showSchoolDistrictPopup(
-                        map,
-                        e,
-                        root,
-                        container,
-                        persistentPopup
-                    );
+                    const features = map.queryRenderedFeatures(e.point, {
+                        layers: [
+                            SubLayerId.SchoolDistrictsSQFill,
+                            SubLayerId.SchoolDistrictsSQBoundary,
+                        ],
+                    });
+                    if (features.length === 0) {
+                        map.getCanvas().style.cursor = 'not-allowed';
+                        const html = `
+                            <span style="color:black;">
+                              <strong>Area excluded due to missing property assessment data.</strong>
+                            </span>
+                            `;
+                        hoverPopup.setLngLat(e.lngLat).setHTML(html).addTo(map);
+                    }
                 };
             default:
                 return (e) => {
@@ -225,6 +271,8 @@ export const getLayerHoverFunction = (
                     console.log('Available Popups: ');
                     console.log('Hover: ', hoverPopup);
                     console.log('Persistent: ', persistentPopup);
+                    console.log('Content Root: ', root);
+                    console.log('Content Container: ', container);
 
                     map.getCanvas().style.cursor = 'pointer';
                 };
@@ -292,15 +340,26 @@ export const getLayerMouseMoveFunction = (
         container: HTMLDivElement
     ) => {
         switch (id) {
-            case SubLayerId.SchoolDistrictsSQFill:
+            case SubLayerId.NegativeSpaceStatesFill:
                 return (e) => {
-                    showSchoolDistrictPopup(
-                        map,
-                        e,
-                        root,
-                        container,
-                        persistentPopup
-                    );
+                    const features = map.queryRenderedFeatures(e.point, {
+                        layers: [
+                            SubLayerId.SchoolDistrictsSQFill,
+                            SubLayerId.SchoolDistrictsSQBoundary,
+                        ],
+                    });
+                    if (features.length === 0) {
+                        map.getCanvas().style.cursor = 'not-allowed';
+                        const html = `
+                        <span style="color:black;">
+                        <strong>Area excluded due to missing property assessment data.</strong>
+                        </span>
+                        `;
+                        hoverPopup
+                            .setLngLat(e.lngLat)
+                            .setHTML(html)
+                            .addTo(map!);
+                    }
                 };
             default:
                 return (e) => {
@@ -378,6 +437,32 @@ export const layerDefinitions: MainLayerDefinition[] = [
     // meaning they have their own click and hover listeners. The order of layers and sublayers dictates the draw
     // order on the map.
     {
+        id: LayerId.NegativeSpaceStates,
+        config: getLayerConfig(LayerId.NegativeSpaceStates),
+        controllable: false,
+        legend: false,
+        subLayers: [
+            {
+                id: SubLayerId.NegativeSpaceStatesFill,
+                config: getLayerConfig(SubLayerId.NegativeSpaceStatesFill),
+                hoverFunction: getLayerHoverFunction(
+                    SubLayerId.NegativeSpaceStatesFill
+                ),
+                mouseMoveFunction: getLayerMouseMoveFunction(
+                    SubLayerId.NegativeSpaceStatesFill
+                ),
+                controllable: false,
+                legend: false,
+            },
+            {
+                id: SubLayerId.NegativeSpaceStatesBoundary,
+                config: getLayerConfig(SubLayerId.NegativeSpaceStatesBoundary),
+                controllable: false,
+                legend: false,
+            },
+        ],
+    },
+    {
         id: LayerId.StateMetricsSQ,
         config: getLayerConfig(LayerId.StateMetricsSQ),
         controllable: false,
@@ -386,6 +471,9 @@ export const layerDefinitions: MainLayerDefinition[] = [
             {
                 id: SubLayerId.StateMetricsSQFill,
                 config: getLayerConfig(SubLayerId.StateMetricsSQFill),
+                hoverFunction: getLayerHoverFunction(
+                    SubLayerId.StateMetricsSQFill
+                ),
                 controllable: false,
                 legend: false,
             },
@@ -406,37 +494,38 @@ export const layerDefinitions: MainLayerDefinition[] = [
             {
                 id: SubLayerId.SchoolDistrictsSQFill,
                 config: getLayerConfig(SubLayerId.SchoolDistrictsSQFill),
+                hoverFunction: getLayerHoverFunction(
+                    SubLayerId.SchoolDistrictsSQFill
+                ),
                 controllable: false,
                 legend: false,
             },
             {
-                id: SubLayerId.SchoolDistictsSQBoundary,
-                config: getLayerConfig(SubLayerId.SchoolDistictsSQBoundary),
+                id: SubLayerId.SchoolDistrictsSQBoundary,
+                config: getLayerConfig(SubLayerId.SchoolDistrictsSQBoundary),
                 controllable: false,
                 legend: false,
             },
         ],
     },
     {
-        id: LayerId.Static_FilteredStates,
-        config: getLayerConfig(LayerId.Static_FilteredStates),
+        id: LayerId.FilteredStates,
+        config: getLayerConfig(LayerId.FilteredStates),
         controllable: false,
         legend: false,
         subLayers: [
             {
-                id: SubLayerId.Static_FilteredStatesFill,
-                config: getLayerConfig(SubLayerId.Static_FilteredStatesFill),
+                id: SubLayerId.FilteredStatesFill,
+                config: getLayerConfig(SubLayerId.FilteredStatesFill),
                 hoverFunction: getLayerHoverFunction(
-                    SubLayerId.Static_FilteredStatesFill
+                    SubLayerId.FilteredStatesFill
                 ),
                 controllable: false,
                 legend: false,
             },
             {
-                id: SubLayerId.Static_FilteredStatesBoundary,
-                config: getLayerConfig(
-                    SubLayerId.Static_FilteredStatesBoundary
-                ),
+                id: SubLayerId.FilteredStatesBoundary,
+                config: getLayerConfig(SubLayerId.FilteredStatesBoundary),
                 controllable: false,
                 legend: false,
             },

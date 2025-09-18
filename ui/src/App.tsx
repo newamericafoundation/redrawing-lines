@@ -11,6 +11,7 @@ import { StaticPopup } from 'src/features/Popups/Static';
 import 'src/App.css';
 import 'src/embla.css';
 import 'tippy.js/dist/tippy.css';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
 import { highlightFeature } from 'src/features/Map/utils/hover';
 import { selectFeature } from 'src/features/Map/utils/selected';
@@ -24,6 +25,7 @@ import {
     ReactCompareSliderHandle,
 } from 'react-compare-slider';
 import Header from 'src/features/Header';
+import { Loading } from './features/Loading';
 
 function App() {
     const infoPanelOpen = useAppStore((state) => state.infoPanelOpen);
@@ -188,12 +190,13 @@ function App() {
     return (
         <>
             <Header showReportLayout={showReportLayout} />
+
             <main className={showReportLayout ? '' : 'showHeader'}>
                 <ReactCompareSlider
                     handle={
                         <ReactCompareSliderHandle
                             buttonStyle={{
-                                backgroundColor: 'var(--primary-teal)',
+                                backgroundColor: 'var(--secondary-teal)',
                             }}
                         />
                     }
@@ -244,6 +247,7 @@ function App() {
                 <Logo />
                 <WelcomeModal />
             </main>
+            <Loading />
         </>
     );
 }

@@ -38,6 +38,8 @@ import { findSchoolDistrict } from 'src/features/Map/utils/findSchoolDistrict';
 import { COMPARISON_MAP_ID } from '../Comparison/config';
 import { RestartButton } from 'src/features/Tools/Restart/Button';
 import { ResetSliderButton } from 'src/features/Tools/ResetSlider/Button';
+import { filteredStates } from '../utils/filter';
+import { getStateName } from 'src/utils/states';
 
 const INITIAL_CENTER: [number, number] = [-98.5795, 39.8282];
 const INITIAL_ZOOM = 4;
@@ -63,6 +65,7 @@ const PrimaryMap: React.FC<Props> = (props) => {
     const setVariable = useAppStore((store) => store.setVariable);
     const state = useAppStore((store) => store.state);
     const setState = useAppStore((store) => store.setState);
+    const otherState = useAppStore((store) => store.otherState);
     const setOtherState = useAppStore((store) => store.setOtherState);
     const schoolDistrict = useAppStore((store) => store.schoolDistrict);
     const setSchoolDistrict = useAppStore((store) => store.setSchoolDistrict);
@@ -73,16 +76,20 @@ const PrimaryMap: React.FC<Props> = (props) => {
     const hoverFeature = useAppStore((store) => store.hoverFeature);
     const setHoverFeature = useAppStore((store) => store.setHoverFeature);
     const setOtherFeature = useAppStore((store) => store.setOtherFeature);
-    const initialMapLoad = useAppStore((state) => state.initialMapLoad);
-    const setInitialMapLoad = useAppStore((state) => state.setInitialMapLoad);
+    const setSliderPosition = useAppStore((store) => store.setSliderPosition);
 
-    const { map, geocoder } = useMap(PRIMARY_MAP_ID);
+    const { map, geocoder, hoverPopup } = useMap(PRIMARY_MAP_ID);
     const { map: comparisonMap } = useMap(COMPARISON_MAP_ID);
 
     const controller = useRef<AbortController | null>(null);
     const isMounted = useRef(true);
 
-    const { fetchStates, goToState, findState } = useStateMetricData('primary');
+    const {
+        fetchStates,
+        goToState,
+        findState,
+        featureCollection: primSMFeatureCollection,
+    } = useStateMetricData('primary');
     const { fetchSchoolDistricts, goToSchoolDistrict, locateSchoolDistrict } =
         useSchoolDistrictData('primary');
     const { featureCollection: compSMFeatureCollection } =
@@ -115,7 +122,16 @@ const PrimaryMap: React.FC<Props> = (props) => {
 
             setVariable(SchoolDistrVariable.AssessedValuePerPupil);
             setState({ which: 'primary', level: 'state', feature });
-            goToState(stateAcronym);
+
+            if (geocoder) {
+                try {
+                    geocoder.setInput('');
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+
+            void goToState(stateAcronym);
         }
     };
 
@@ -142,7 +158,15 @@ const PrimaryMap: React.FC<Props> = (props) => {
                 feature,
             });
 
-            goToSchoolDistrict(schoolDistrict);
+            if (geocoder) {
+                try {
+                    geocoder.setInput('');
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+
+            void goToSchoolDistrict(schoolDistrict);
         }
     };
 
@@ -182,6 +206,10 @@ const PrimaryMap: React.FC<Props> = (props) => {
         });
 
         if (features.length > 0) {
+            if (hoverPopup) {
+                hoverPopup.remove();
+            }
+
             const feature =
                 features[0] as unknown as SchoolDistrictFeature<Polygon>['feature'];
             const hoverFeature = useAppStore.getState().hoverFeature;
@@ -199,6 +227,11 @@ const PrimaryMap: React.FC<Props> = (props) => {
     };
 
     const handleHoverExit = () => {
+        if (!map) {
+            return;
+        }
+
+        map.getCanvas().style.cursor = '';
         debouncedHandleStateHover.cancel();
         debouncedHandleSchoolDistrictHover.cancel();
         setHoverFeature(null);
@@ -232,20 +265,16 @@ const PrimaryMap: React.FC<Props> = (props) => {
         if (!map) {
             return;
         }
-
-        if (initialMapLoad) {
-            map.resize();
-            map.fitBounds(
-                [
-                    [-125.0011, 24.9493], // Southwest corner [lng, lat]
-                    [-66.9326, 49.5904], // Northeast corner [lng, lat]
-                ],
-                {
-                    padding: { left: 50, right: 50 },
-                }
-            );
-            setInitialMapLoad(false);
-        }
+        map.resize();
+        map.fitBounds(
+            [
+                [-125.0011, 24.9493], // Southwest corner [lng, lat]
+                [-66.9326, 49.5904], // Northeast corner [lng, lat]
+            ],
+            {
+                padding: { left: 50, right: 50 },
+            }
+        );
 
         map.on('click', SubLayerId.StateMetricsSQFill, handleStateClick);
         map.on(
@@ -338,58 +367,100 @@ const PrimaryMap: React.FC<Props> = (props) => {
     }, [map, debouncedHandleSchoolDistrictHover]);
 
     useEffect(() => {
-        if (!geocoder || !map || !comparisonMap) {
+        if (
+            !geocoder ||
+            !map ||
+            !comparisonMap ||
+            primSMFeatureCollection.features.length === 0
+        ) {
             return;
         }
 
-        let marker: Marker;
-        geocoder.on('result', async (e) => {
-            if (marker) {
-                marker.remove();
-            }
-            const result: MapboxGeocoder.Result = e.result;
-            const center = result.center as [number, number];
-            marker = new Marker().setLngLat(center).addTo(map);
-            marker = new Marker().setLngLat(center).addTo(comparisonMap);
-
-            const featureCollection = await locateSchoolDistrict(center);
-
-            if (
-                featureCollection?.features &&
-                featureCollection.features.length > 0
-            ) {
-                const feature = featureCollection.features[0];
-                const stateAcronym =
-                    feature.properties[SchoolDistrVariable.State];
-                const state = findState(stateAcronym);
-
-                if (state) {
-                    setState({
-                        which: 'primary',
-                        level: 'state',
-                        feature: state,
-                    });
-                    setSchoolDistrict({
-                        which: 'primary',
-                        level: 'school-district',
-                        feature,
-                    });
+        let primMarker: Marker;
+        let compMarker: Marker;
+        geocoder.on('result', (e) => {
+            (async () => {
+                if (primMarker) {
+                    primMarker.remove();
                 }
-            }
+                if (compMarker) {
+                    compMarker.remove();
+                }
+                const result: MapboxGeocoder.Result = e.result;
+                const center = result.center as [number, number];
+                const primElement = document.createElement('div');
+                primElement.className = 'custom-marker';
+
+                const compElement = document.createElement('div');
+                compElement.className = 'custom-marker';
+
+                primMarker = new Marker(primElement)
+                    .setLngLat(center)
+                    .addTo(map);
+                compMarker = new Marker(compElement)
+                    .setLngLat(center)
+                    .addTo(comparisonMap);
+
+                const featureCollection = await locateSchoolDistrict(center);
+                if (
+                    featureCollection?.features &&
+                    featureCollection.features.length > 0
+                ) {
+                    const feature = featureCollection.features[0];
+                    const stateAcronym =
+                        feature.properties[SchoolDistrVariable.State];
+                    const state = findState(stateAcronym);
+
+                    const sliderPosition =
+                        useAppStore.getState().sliderPosition;
+                    // Adjust slider to not cover marker
+                    if (sliderPosition >= 40 && sliderPosition <= 60) {
+                        setSliderPosition(70);
+                    }
+
+                    if (state) {
+                        setState({
+                            which: 'primary',
+                            level: 'state',
+                            feature: state,
+                        });
+                        setSchoolDistrict({
+                            which: 'primary',
+                            level: 'school-district',
+                            feature,
+                        });
+                        const schoolDistrict =
+                            feature.properties[SchoolDistrVariable.ID] ??
+                            feature[SchoolDistrVariable.ID];
+                        void goToSchoolDistrict(schoolDistrict);
+                    }
+                } else {
+                    console.warn('Unable to to locate school district');
+                }
+            })();
         });
 
         geocoder.on('clear', () => {
-            if (marker) {
-                marker.remove();
+            if (primMarker) {
+                primMarker.remove();
             }
+            if (compMarker) {
+                compMarker.remove();
+            }
+
+            setSchoolDistrict(null);
+            setOtherSchoolDistrict(null);
         });
 
         return () => {
-            if (marker) {
-                marker.remove();
+            if (primMarker) {
+                primMarker.remove();
+            }
+            if (compMarker) {
+                compMarker.remove();
             }
         };
-    }, [geocoder]);
+    }, [geocoder, primSMFeatureCollection]);
 
     useEffect(() => {
         if (!map) return;
@@ -495,14 +566,27 @@ const PrimaryMap: React.FC<Props> = (props) => {
                         padding: { left: 50, right: 50 },
                     }
                 );
+                map?.setLayoutProperty(
+                    SubLayerId.NegativeSpaceStatesFill,
+                    'visibility',
+                    'none'
+                );
+                map?.setLayoutProperty(
+                    SubLayerId.NegativeSpaceStatesBoundary,
+                    'visibility',
+                    'none'
+                );
             }
             return;
         }
         if (state.level === 'state') {
+            const stateAcronym =
+                state.feature.properties[StateLevelVariable.StateAcronym];
+
             const otherFeature = compSMFeatureCollection.features.find(
                 (compFeature) =>
                     compFeature.properties[StateLevelVariable.StateAcronym] ===
-                    state.feature.properties[StateLevelVariable.StateAcronym]
+                    stateAcronym
             );
 
             if (otherFeature) {
@@ -512,8 +596,73 @@ const PrimaryMap: React.FC<Props> = (props) => {
                     feature: otherFeature as StateFeature<Polygon>['feature'],
                 });
             }
+
+            map?.setFilter(SubLayerId.NegativeSpaceStatesFill, [
+                '==',
+                ['get', StateLevelVariable.StateAcronym],
+                stateAcronym,
+            ]);
+            map?.setFilter(SubLayerId.NegativeSpaceStatesBoundary, [
+                '==',
+                ['get', StateLevelVariable.StateAcronym],
+                stateAcronym,
+            ]);
+
+            map?.setLayoutProperty(
+                SubLayerId.NegativeSpaceStatesFill,
+                'visibility',
+                'visible'
+            );
+            map?.setLayoutProperty(
+                SubLayerId.NegativeSpaceStatesBoundary,
+                'visibility',
+                'visible'
+            );
         }
     }, [state, compSMFeatureCollection]);
+
+    useEffect(() => {
+        if (!otherState || otherState.which === 'primary') {
+            if (!otherState && map) {
+                map.setLayoutProperty(
+                    SubLayerId.NegativeSpaceStatesFill,
+                    'visibility',
+                    'none'
+                );
+                map.setLayoutProperty(
+                    SubLayerId.NegativeSpaceStatesBoundary,
+                    'visibility',
+                    'none'
+                );
+            }
+            return;
+        }
+
+        const stateAcronym =
+            otherState.feature.properties[StateLevelVariable.StateAcronym];
+
+        map?.setFilter(SubLayerId.NegativeSpaceStatesFill, [
+            '==',
+            ['get', StateLevelVariable.StateAcronym],
+            stateAcronym,
+        ]);
+        map?.setFilter(SubLayerId.NegativeSpaceStatesBoundary, [
+            '==',
+            ['get', StateLevelVariable.StateAcronym],
+            stateAcronym,
+        ]);
+
+        map?.setLayoutProperty(
+            SubLayerId.NegativeSpaceStatesFill,
+            'visibility',
+            'visible'
+        );
+        map?.setLayoutProperty(
+            SubLayerId.NegativeSpaceStatesBoundary,
+            'visibility',
+            'visible'
+        );
+    }, [otherState]);
 
     useEffect(() => {
         if (!schoolDistrict || schoolDistrict.which === 'comparison') {
@@ -591,6 +740,22 @@ const PrimaryMap: React.FC<Props> = (props) => {
                     bbox: [-135.70536, 20.04941, -58.49207, 51.40235], // limit to continental US
                     countries: 'us', // exclude non-US cities in bbox
                     placeholder: 'Search for a location',
+                    flyTo: false,
+                    trackProximity: false,
+                    filter: (item) => {
+                        return !filteredStates
+                            .filter(
+                                (stateAcronym) =>
+                                    getStateName(stateAcronym).length > 0
+                            )
+                            .some((stateAcronym) =>
+                                item.place_name
+                                    .toLowerCase()
+                                    .includes(
+                                        getStateName(stateAcronym).toLowerCase()
+                                    )
+                            );
+                    },
                 }}
             />
         </>

@@ -1,13 +1,11 @@
 .infoPanel {
     width: 490px;
     min-width: 490px;
-    height: 100vh;
+    height: 100%;
     background-color: #fff;
 
     padding-left: 16px;
     padding-right: 16px;
-
-    padding-top: 16px;
 
     display: flex;
     flex-direction: column;
@@ -167,13 +165,13 @@ div.headerOffset div.infoWrapper {
 
 .improvementGroup {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     margin-bottom: 16px;
 }
 .improvementGroup > svg {
     width: 18px;
     height: auto;
-    margin-left: 4px;
+    margin-left: 8px;
 }
 
 .redistrictingSection {
@@ -226,7 +224,7 @@ div.headerOffset div.infoWrapper {
 }
 
 .textTeal {
-    color: var(--primary-teal);
+    color: var(--secondary-teal);
 }
 
 .indent {

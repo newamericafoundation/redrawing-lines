@@ -16,7 +16,7 @@ import {
 } from 'components/Map/utils';
 
 import 'mapbox-gl/dist/mapbox-gl.css';
-import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+// import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
 import FeatureService, {
     FeatureServiceOptions,
@@ -59,18 +59,26 @@ const MapComponent: React.FC<MapComponentProps> = (props) => {
         customControls,
         accessToken,
         persist = false,
-        geocoder,
+        geocoder: newGeocoder,
     } = props;
 
     const mapContainerRef = useRef<HTMLDivElement | null>(null);
-    const { map, hoverPopup, persistentPopup, root, container, setMap } =
-        useMap(id);
+    const {
+        map,
+        hoverPopup,
+        persistentPopup,
+        root,
+        container,
+        geocoder,
+        setMap,
+    } = useMap(id);
 
     useEffect(() => {
         if (!map && mapContainerRef.current) {
             mapboxgl.accessToken = accessToken;
             const newMap = new mapboxgl.Map({
                 ...options,
+                accessToken: accessToken,
                 container: mapContainerRef.current,
             });
             const hoverPopup = new mapboxgl.Popup({
@@ -80,13 +88,18 @@ const MapComponent: React.FC<MapComponentProps> = (props) => {
 
             const persistentPopup = new mapboxgl.Popup();
 
-            let _geocoder: MapboxGeocoder | null = null;
-            if (geocoder) {
-                const { position, ...geocoderWithoutPosition } = geocoder;
+            let _geocoder: MapboxGeocoder | null = geocoder;
+            if (!geocoder && newGeocoder) {
+                const { position, ...geocoderWithoutPosition } = newGeocoder;
                 _geocoder = new MapboxGeocoder({
-                    accessToken: mapboxgl.accessToken,
+                    accessToken: accessToken,
+                    marker: false,
                     ...geocoderWithoutPosition,
                 });
+                _geocoder.on('error', (e) => {
+                    console.error('Geocoder error:', e);
+                });
+
                 if (position) {
                     newMap.addControl(_geocoder, position);
                 }
