@@ -340,6 +340,18 @@ export const getLayerMouseMoveFunction = (
         container: HTMLDivElement
     ) => {
         switch (id) {
+            case SubLayerId.SchoolDistrictsSQFill:
+                return () => {
+                    map.getCanvas().style.cursor = 'pointer';
+                };
+            case SubLayerId.StateMetricsSQFill:
+                return () => {
+                    map.getCanvas().style.cursor = 'pointer';
+                };
+            case SubLayerId.FilteredStatesFill:
+                return () => {
+                    map.getCanvas().style.cursor = 'not-allowed';
+                };
             case SubLayerId.NegativeSpaceStatesFill:
                 return (e) => {
                     const features = map.queryRenderedFeatures(e.point, {
@@ -445,12 +457,12 @@ export const layerDefinitions: MainLayerDefinition[] = [
             {
                 id: SubLayerId.NegativeSpaceStatesFill,
                 config: getLayerConfig(SubLayerId.NegativeSpaceStatesFill),
-                hoverFunction: getLayerHoverFunction(
-                    SubLayerId.NegativeSpaceStatesFill
-                ),
-                mouseMoveFunction: getLayerMouseMoveFunction(
-                    SubLayerId.NegativeSpaceStatesFill
-                ),
+                // hoverFunction: getLayerHoverFunction(
+                //     SubLayerId.NegativeSpaceStatesFill
+                // ),
+                // mouseMoveFunction: getLayerMouseMoveFunction(
+                //     SubLayerId.NegativeSpaceStatesFill
+                // ),
                 controllable: false,
                 legend: false,
             },
@@ -472,6 +484,9 @@ export const layerDefinitions: MainLayerDefinition[] = [
                 id: SubLayerId.StateMetricsSQFill,
                 config: getLayerConfig(SubLayerId.StateMetricsSQFill),
                 hoverFunction: getLayerHoverFunction(
+                    SubLayerId.StateMetricsSQFill
+                ),
+                mouseMoveFunction: getLayerHoverFunction(
                     SubLayerId.StateMetricsSQFill
                 ),
                 controllable: false,
@@ -497,6 +512,9 @@ export const layerDefinitions: MainLayerDefinition[] = [
                 hoverFunction: getLayerHoverFunction(
                     SubLayerId.SchoolDistrictsSQFill
                 ),
+                mouseMoveFunction: getLayerHoverFunction(
+                    SubLayerId.SchoolDistrictsSQFill
+                ),
                 controllable: false,
                 legend: false,
             },
@@ -518,6 +536,9 @@ export const layerDefinitions: MainLayerDefinition[] = [
                 id: SubLayerId.FilteredStatesFill,
                 config: getLayerConfig(SubLayerId.FilteredStatesFill),
                 hoverFunction: getLayerHoverFunction(
+                    SubLayerId.FilteredStatesFill
+                ),
+                mouseMoveFunction: getLayerHoverFunction(
                     SubLayerId.FilteredStatesFill
                 ),
                 controllable: false,

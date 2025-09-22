@@ -24,6 +24,10 @@ main.showHeader {
     height: calc(100vh - 64px);
 }
 
+main.infoPanelClosed div[data-rcs='root'] {
+    min-height: calc(100vh - 173px);
+}
+
 main div[data-rcs='root'] {
     flex: 1;
     display: flex;
@@ -112,7 +116,7 @@ p {
 
     main div[data-rcs='root'] {
         height: auto;
-        min-height: 80vh;
+        min-height: 65vh;
     }
 
     #panel-open,

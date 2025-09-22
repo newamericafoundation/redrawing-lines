@@ -5,6 +5,7 @@ import { StateLevelVariable } from 'src/types';
 import { useStateMetricData } from 'src/hooks/useStateMetricData';
 import { useMap } from 'src/contexts/MapContexts';
 import { PRIMARY_MAP_ID } from '../Map/Primary/config';
+import { clearGeocoder } from '../Map/utils/geocoder';
 
 export const StateSelect: React.FC = () => {
     const [options, setOptions] = useState<
@@ -64,11 +65,7 @@ export const StateSelect: React.FC = () => {
                 void goToState(id);
 
                 if (geocoder) {
-                    try {
-                        geocoder.setInput('');
-                    } catch (error) {
-                        console.error(error);
-                    }
+                    clearGeocoder(geocoder);
                 }
             }
         }

@@ -3,26 +3,29 @@
     bottom: 29px;
     right: 49px;
 
-    color: var(--white);
-    background-color: var(--secondary-teal);
-
     z-index: 999;
-    border-radius: 8px;
-}
 
-.border {
-    /* border: 1px solid #383838; */
+    padding: 8px;
+    border-radius: 8px;
 
     min-width: 250px;
+}
 
-    padding: 4px;
-    margin: 4px;
-    border-radius: 8px;
+.data {
+    color: var(--white);
+    background-color: var(--secondary-teal);
+}
+
+.noData {
+    color: var(--black);
+    background-color: var(--white);
+
+    font-weight: bold;
+    max-width: 290px;
 }
 
 .statePopupHeaderWrapper {
     display: flex;
-    justify-content: center;
     align-items: center;
 }
 
@@ -39,4 +42,10 @@
 
 .infoPanelOpen {
     right: 572px;
+}
+
+@media screen and (max-width: 1100px) {
+    .static {
+        display: none;
+    }
 }

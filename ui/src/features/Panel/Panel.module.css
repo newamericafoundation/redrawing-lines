@@ -54,6 +54,7 @@ div.headerOffset div.infoWrapper {
     position: relative;
 
     margin-top: auto;
+    min-height: 240px;
     height: 240px;
     max-height: 48%;
     margin-bottom: 8px;
@@ -141,6 +142,10 @@ div.headerOffset div.infoWrapper {
 
 .improvementEntry {
     max-width: calc(47% - 4px);
+}
+
+.improvementEntryTitle {
+    color: var(--secondary-teal);
 }
 
 .boldText {

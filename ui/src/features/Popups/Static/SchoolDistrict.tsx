@@ -30,8 +30,27 @@ export const SchoolDistrict: React.FC<Props> = (props) => {
                     state.feature.properties[StateLevelVariable.StateAcronym]
                 )(
                     hoverFeature.feature.properties[SchoolDistrVariable.Name] ??
-                        ''
+                        '',
+                    hoverFeature.feature.properties[
+                        SchoolDistrVariable.GeoID
+                    ] ?? ''
                 );
+            } else if (
+                hoverFeature.which === 'comparison' &&
+                model === Model.CountyConsolidated
+            ) {
+                title =
+                    createCleanLabelFunction(
+                        state.feature.properties[
+                            StateLevelVariable.StateAcronym
+                        ],
+                        model
+                    )(
+                        hoverFeature.feature.properties?.[
+                            SchoolDistrVariable.Entity
+                        ] ?? '',
+                        ''
+                    ) + ' District';
             }
 
             setTitle(title);

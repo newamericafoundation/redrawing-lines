@@ -1,4 +1,6 @@
 export enum StateLevelVariable {
+    Id = 'id',
+
     TheilFunding = 'theil_funding',
     TheilEconomic = 'theil_economic',
     ThielRacial = 'theil_racial',
@@ -20,6 +22,8 @@ export enum StateLevelVariable {
     Q4StudentsOfColor = 'q4_students_color',
     Q1ChildPoverty = 'q1_child_poverty',
     Q4ChildPoverty = 'q4_child_poverty',
+
+    Version = 'version',
 }
 
 /**
@@ -48,6 +52,7 @@ export const stateLevelDataVariableValues: StateLevelVariable[] = [
 
 export type StateMetricProperties = {
     [StateLevelVariable.Name]: string;
+    [StateLevelVariable.Id]?: string | number;
     [StateLevelVariable.AFFGeoId]: string;
     [StateLevelVariable.LandArea]: number;
     [StateLevelVariable.WaterArea]: number;
@@ -68,4 +73,6 @@ export type StateMetricProperties = {
     [StateLevelVariable.Q4StudentsOfColor]: string;
     [StateLevelVariable.Q1ChildPoverty]: string;
     [StateLevelVariable.Q4ChildPoverty]: string;
+
+    [StateLevelVariable.Version]: string;
 };

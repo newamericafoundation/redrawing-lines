@@ -9,12 +9,13 @@ import { useStateMetricData } from 'src/hooks/useStateMetricData';
 import useAppStore, { StateFeature } from 'src/lib/appState';
 import { StateLevelVariable } from 'src/types';
 import Carousel from 'src/components/Carousel';
-import { StudentsOfColor } from './Improvement/StudentsOfColor';
+import { StudentsOfColor } from 'src/features/Panel/Screens/State/Improvement/StudentsOfColor';
 import { toWholeNumber } from 'src/utils/wholeNumber';
-import { PropertyTax } from './Improvement/PropertyTax';
-import { ChildPovertyRate } from './Improvement/ChildPovertyRate';
+import { PropertyTax } from 'src/features/Panel/Screens/State/Improvement/PropertyTax';
+import { ChildPovertyRate } from 'src/features/Panel/Screens/State/Improvement/ChildPovertyRate';
 import Tippy from '@tippyjs/react';
-import Info from 'src/assets/Info';
+import { Improvement } from 'src/features/Panel/Screens/State/Improvement';
+import { isInvalidStateFeature } from '../../utils';
 
 const State: React.FC = () => {
     const state = useAppStore((state) => state.state);
@@ -27,8 +28,8 @@ const State: React.FC = () => {
 
     const { map } = useMap(PRIMARY_MAP_ID);
 
-    const [primary, setPrimary] = useState<StateFeature>();
-    const [comparison, setComparison] = useState<StateFeature>();
+    const [primary, setPrimary] = useState<StateFeature | null>(null);
+    const [comparison, setComparison] = useState<StateFeature | null>(null);
 
     const [segrImprovement, setSegrImprovement] = useState<number>();
     const [fundImprovement, setFundImprovement] = useState<number>();
@@ -146,70 +147,53 @@ const State: React.FC = () => {
                         </div>
 
                         <hr />
-                        <section className={styles.improvementWrapper}>
-                            {fundImprovement && (
-                                <Tippy content="New districts have a more equal amount of assessed property valuation per pupil">
-                                    <div className={styles.improvementGroup}>
-                                        <Typography
-                                            variant="body-large"
-                                            className={styles.improvementText}
-                                        >
-                                            {fundImprovement}% more tax-base
-                                            equality
-                                        </Typography>
-                                        <Info />
-                                    </div>
-                                </Tippy>
-                            )}
-                            {segrImprovement && (
-                                <Tippy content="Student populations in new districts are more reflective of state racial demographics">
-                                    <div className={styles.improvementGroup}>
-                                        <Typography
-                                            variant="body-large"
-                                            className={styles.improvementText}
-                                        >
-                                            {segrImprovement}% greater racial
-                                            integration
-                                        </Typography>
-                                        <Info />
-                                    </div>
-                                </Tippy>
-                            )}
-                            {econImprovement && (
-                                <Tippy content="Student poverty rates in new districts more closely match the state poverty rate">
-                                    <div className={styles.improvementGroup}>
-                                        <Typography
-                                            variant="body-large"
-                                            className={styles.improvementText}
-                                        >
-                                            {econImprovement}% greater economic
-                                            integration
-                                        </Typography>
-                                        <Info />
-                                    </div>
-                                </Tippy>
-                            )}
-                        </section>
-                        {primary && comparison && (
-                            <section className={styles.improvementWrapper}>
-                                <Carousel
-                                    id="state-improvement"
-                                    slides={[
-                                        <PropertyTax
-                                            primary={primary}
-                                            comparison={comparison}
-                                        />,
-                                        <StudentsOfColor
-                                            primary={primary}
-                                            comparison={comparison}
-                                        />,
-                                        <ChildPovertyRate
-                                            primary={primary}
-                                            comparison={comparison}
-                                        />,
-                                    ]}
-                                />
-                            </section>
+
+                        {isInvalidStateFeature(comparison) ? (
+                            <Typography variant="body-large">
+                                District borders in{' '}
+                                {
+                                    state.feature.properties[
+                                        StateLevelVariable.Name
+                                    ]
+                                }{' '}
+                                would not change from county-based
+                                redistricting.
+                            </Typography>
+                        ) : (
+                            <>
+                                {fundImprovement &&
+                                    segrImprovement &&
+                                    econImprovement && (
+                                        <Improvement
+                                            fundImprovement={fundImprovement}
+                                            segrImprovement={segrImprovement}
+                                            econImprovement={econImprovement}
+                                        />
+                                    )}
+                                {primary && comparison && (
+                                    <section
+                                        className={styles.improvementWrapper}
+                                    >
+                                        <Carousel
+                                            id="state-improvement"
+                                            slides={[
+                                                <PropertyTax
+                                                    primary={primary}
+                                                    comparison={comparison}
+                                                />,
+                                                <StudentsOfColor
+                                                    primary={primary}
+                                                    comparison={comparison}
+                                                />,
+                                                <ChildPovertyRate
+                                                    primary={primary}
+                                                    comparison={comparison}
+                                                />,
+                                            ]}
+                                        />
+                                    </section>
+                                )}
+                            </>
                         )}
                     </div>
                 </>

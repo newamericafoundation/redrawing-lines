@@ -11,7 +11,6 @@ import { getSelectedCases } from 'src/features/Map/utils/selected';
 
 const applyFeatureHighlighting = (
     map: Map,
-    fillLayerIds: string[],
     lineLayerIds: string[],
     hoverFeature: InteractiveFeature<Polygon>['feature'] | null,
     selectedFeature:
@@ -22,20 +21,6 @@ const applyFeatureHighlighting = (
     const id = hoverFeature?.properties?.['id'] ?? hoverFeature?.id;
     const selectedFeatureId =
         selectedFeature?.properties?.['id'] ?? selectedFeature?.id;
-
-    const fillOpacity: ExpressionSpecification | number = hoverFeature
-        ? [
-              'case',
-              ['==', ['get', 'id'], id],
-              0.8,
-              ['==', ['id'], id],
-              0.8,
-              ...(selectedFeature
-                  ? getSelectedCases(selectedFeatureId!, 'fill-opacity')
-                  : []),
-              0.3,
-          ]
-        : 0.5;
 
     const lineColor: ExpressionSpecification | string = hoverFeature
         ? [
@@ -79,10 +64,6 @@ const applyFeatureHighlighting = (
           ]
         : 0;
 
-    fillLayerIds.forEach((layerId) =>
-        map.setPaintProperty(layerId, 'fill-opacity', fillOpacity)
-    );
-
     lineLayerIds.forEach((layerId) => {
         map.setPaintProperty(layerId, 'line-color', lineColor);
         map.setPaintProperty(layerId, 'line-width', lineWidth);
@@ -97,13 +78,16 @@ export const highlightFeature = (
     selectedFeature: StateFeature | SchoolDistrictFeature | null
 ) => {
     const level = hoverFeature?.level;
-    const { fill, line } = getLayerIds(which, level);
+    const { line } = getLayerIds(which, level);
 
     applyFeatureHighlighting(
         map,
-        fill,
         line,
         hoverFeature?.feature ?? null,
-        selectedFeature?.feature ?? null
+        selectedFeature &&
+            hoverFeature &&
+            selectedFeature.level === hoverFeature.level
+            ? selectedFeature?.feature
+            : null
     );
 };

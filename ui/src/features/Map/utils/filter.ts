@@ -18,6 +18,8 @@ export const filteredStates = [
     'DC',
 ];
 
+export const invalidCountyStates = ['FL', 'MD', 'NV', 'VA', 'WV'];
+
 export const getStateFilter = (): FilterSpecification => {
     return [
         '!',

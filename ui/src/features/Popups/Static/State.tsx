@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Typography } from 'src/components/Typography';
-import { StateFeature } from 'src/lib/appState';
-import { StateLevelVariable } from 'src/types';
+import useAppStore, { StateFeature } from 'src/lib/appState';
+import { Model, StateLevelVariable } from 'src/types';
 import styles from 'src/features/Popups/Popups.module.css';
+import { invalidCountyStates } from 'src/features/Map/utils/filter';
 
 type Props = {
     hoverFeature: StateFeature;
@@ -12,9 +13,13 @@ type Props = {
 export const State: React.FC<Props> = (props) => {
     const { hoverFeature, otherFeature } = props;
 
+    const model = useAppStore((state) => state.model);
+
     const [segrImprovement, setSegrImprovement] = useState<number>();
     const [fundImprovement, setFundImprovement] = useState<number>();
     const [econImprovement, setEconImprovement] = useState<number>();
+
+    const [isInvalidState, setIsInvalidState] = useState<boolean>(false);
 
     useEffect(() => {
         if (!hoverFeature || !otherFeature) {
@@ -64,36 +69,89 @@ export const State: React.FC<Props> = (props) => {
         setFundImprovement(fundImprovement);
     }, [hoverFeature, otherFeature]);
 
+    useEffect(() => {
+        if (!hoverFeature || !otherFeature) {
+            return;
+        }
+
+        if (model !== Model.CountyConsolidated) {
+            setIsInvalidState(false);
+        } else {
+            const feature =
+                hoverFeature.which === 'primary'
+                    ? hoverFeature.feature
+                    : otherFeature.feature;
+
+            const stateAcronym =
+                feature.properties[
+                    StateLevelVariable.StateAcronym
+                ].toUpperCase();
+
+            setIsInvalidState(invalidCountyStates.includes(stateAcronym));
+        }
+    }, [hoverFeature, otherFeature, model]);
+
     return (
         <>
-            <div className={styles.statePopupHeaderWrapper}>
-                <Typography variant="h5">
-                    After redistricting,{' '}
-                    {String(
-                        hoverFeature.feature.properties[StateLevelVariable.Name]
-                    )}{' '}
-                    would have:
-                </Typography>
-            </div>
+            {isInvalidState ? (
+                <>
+                    <div className={styles.statePopupHeaderWrapper}>
+                        <Typography variant="h5">
+                            {
+                                hoverFeature.feature.properties[
+                                    StateLevelVariable.Name
+                                ]
+                            }
+                        </Typography>
+                    </div>
 
-            <hr />
-            <div className={styles.statePopupContentWrapper}>
-                {fundImprovement && (
-                    <Typography variant="body-large">
-                        {fundImprovement}% more tax-base equality
-                    </Typography>
-                )}
-                {segrImprovement && (
-                    <Typography variant="body-large">
-                        {segrImprovement}% greater racial integration
-                    </Typography>
-                )}
-                {econImprovement && (
-                    <Typography variant="body-large">
-                        {econImprovement}% greater economic integration
-                    </Typography>
-                )}
-            </div>
+                    <hr />
+                    <div>
+                        <Typography variant="body-large">
+                            District borders in{' '}
+                            {
+                                hoverFeature.feature.properties[
+                                    StateLevelVariable.Name
+                                ]
+                            }{' '}
+                            would not change from county-based redistricting.
+                        </Typography>
+                    </div>
+                </>
+            ) : (
+                <>
+                    <div className={styles.statePopupHeaderWrapper}>
+                        <Typography variant="h5">
+                            After redistricting,{' '}
+                            {String(
+                                hoverFeature.feature.properties[
+                                    StateLevelVariable.Name
+                                ]
+                            )}{' '}
+                            would have:
+                        </Typography>
+                    </div>
+
+                    <hr />
+                    <div>
+                        {fundImprovement && (
+                            <Typography variant="body-large">
+                                {fundImprovement}% more tax-base equality
+                            </Typography>
+                        )}
+                        {segrImprovement && (
+                            <Typography variant="body-large">
+                                {segrImprovement}% greater racial integration
+                            </Typography>
+                        )}
+                        {econImprovement && (
+                            <Typography variant="body-large">
+                                {econImprovement}% greater economic integration
+                            </Typography>
+                        )}
+                    </div>
+                </>
+            )}
         </>
     );
 };

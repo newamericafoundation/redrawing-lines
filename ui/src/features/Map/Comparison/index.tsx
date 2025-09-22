@@ -37,9 +37,14 @@ import {
     updateSchoolDistricts,
     updateStateMetrics,
 } from 'src/features/Map/utils/style';
-import { findSchoolDistrict } from 'src/features/Map/utils/findSchoolDistrict';
+import {
+    confirmSchoolDistrict,
+    confirmState,
+    findSchoolDistrict,
+} from 'src/features/Map/utils/find';
 import { ResetSliderButton } from 'src/features/Tools/ResetSlider/Button';
 import { PRIMARY_MAP_ID } from '../Primary/config';
+import { clearGeocoder } from '../utils/geocoder';
 
 const INITIAL_CENTER: [number, number] = [-98.5795, 39.8282];
 const INITIAL_ZOOM = 4;
@@ -65,10 +70,13 @@ const ComparisonMap: React.FC<Props> = (props) => {
     const model = useAppStore((store) => store.model);
     const setVariable = useAppStore((store) => store.setVariable);
     const state = useAppStore((store) => store.state);
+    const schoolDistrict = useAppStore((store) => store.schoolDistrict);
     const setState = useAppStore((store) => store.setState);
     const otherState = useAppStore((store) => store.otherState);
     const setOtherState = useAppStore((store) => store.setOtherState);
-    const schoolDistrict = useAppStore((store) => store.schoolDistrict);
+    const otherSchoolDistrict = useAppStore(
+        (store) => store.otherSchoolDistrict
+    );
     const setSchoolDistrict = useAppStore((store) => store.setSchoolDistrict);
     const setOtherSchoolDistrict = useAppStore(
         (store) => store.setOtherSchoolDistrict
@@ -77,6 +85,7 @@ const ComparisonMap: React.FC<Props> = (props) => {
     const hoverFeature = useAppStore((store) => store.hoverFeature);
     const setHoverFeature = useAppStore((store) => store.setHoverFeature);
     const setOtherFeature = useAppStore((store) => store.setOtherFeature);
+    const setShowNoData = useAppStore((store) => store.setShowNoData);
     const { map, hoverPopup } = useMap(COMPARISON_MAP_ID);
     const { geocoder } = useMap(PRIMARY_MAP_ID);
 
@@ -114,14 +123,10 @@ const ComparisonMap: React.FC<Props> = (props) => {
             const stateAcronym = properties[StateLevelVariable.StateAcronym];
 
             setVariable(SchoolDistrVariable.AssessedValuePerPupil);
-            setState({ which: 'comparison', level: 'state', feature });
+            setOtherState({ which: 'comparison', level: 'state', feature });
 
             if (geocoder) {
-                try {
-                    geocoder.setInput('');
-                } catch (error) {
-                    console.error(error);
-                }
+                clearGeocoder(geocoder);
             }
 
             void goToState(stateAcronym);
@@ -143,6 +148,7 @@ const ComparisonMap: React.FC<Props> = (props) => {
         });
 
         if (features.length > 0) {
+            setShowNoData(false);
             const feature =
                 features[0] as unknown as StateFeature<Polygon>['feature'];
 
@@ -181,18 +187,14 @@ const ComparisonMap: React.FC<Props> = (props) => {
             const properties = feature.properties as SchoolDistrictProperties;
             const schoolDistrict = properties[SchoolDistrVariable.ID];
 
-            setSchoolDistrict({
+            setOtherSchoolDistrict({
                 which: 'comparison',
                 level: 'school-district',
                 feature,
             });
 
             if (geocoder) {
-                try {
-                    geocoder.setInput('');
-                } catch (error) {
-                    console.error(error);
-                }
+                clearGeocoder(geocoder);
             }
 
             void goToSchoolDistrict(schoolDistrict);
@@ -214,6 +216,8 @@ const ComparisonMap: React.FC<Props> = (props) => {
         });
 
         if (features.length > 0) {
+            setShowNoData(false);
+
             if (hoverPopup) {
                 hoverPopup.remove();
             }
@@ -233,6 +237,30 @@ const ComparisonMap: React.FC<Props> = (props) => {
         }
     };
 
+    const handleNoDataHover = (e: MapMouseEvent) => {
+        if (!map) {
+            return;
+        }
+        const features = map.queryRenderedFeatures(e.point, {
+            layers: [
+                SubLayerId.SchoolDistrictsSQFill,
+                SubLayerId.SchoolDistrictsSQBoundary,
+                SubLayerId.SchoolDistrictsOptimFill,
+                SubLayerId.SchoolDistrictsOptimBoundary,
+                SubLayerId.SchoolDistrictsConsolFill,
+                SubLayerId.SchoolDistrictsConsolBoundary,
+                SubLayerId.SchoolDistrictsCountyFill,
+                SubLayerId.SchoolDistrictsCountyBoundary,
+            ],
+        });
+
+        if (features.length === 0) {
+            map.getCanvas().style.cursor = 'not-allowed';
+
+            setShowNoData(true);
+        }
+    };
+
     const handleHoverExit = () => {
         if (!map) {
             return;
@@ -241,8 +269,10 @@ const ComparisonMap: React.FC<Props> = (props) => {
         map.getCanvas().style.cursor = '';
         debouncedHandleStateHover.cancel();
         debouncedHandleSchoolDistrictHover.cancel();
+        debouncedHandleNoDataHover.cancel();
         setHoverFeature(null);
         setOtherFeature(null);
+        setShowNoData(false);
     };
 
     const debouncedHandleStateHover = useMemo(() => {
@@ -251,6 +281,10 @@ const ComparisonMap: React.FC<Props> = (props) => {
 
     const debouncedHandleSchoolDistrictHover = useMemo(() => {
         return debounce(handleSchoolDistrictHover, 25);
+    }, [map]);
+
+    const debouncedHandleNoDataHover = useMemo(() => {
+        return debounce(handleNoDataHover, 5);
     }, [map]);
 
     useEffect(() => {
@@ -458,6 +492,45 @@ const ComparisonMap: React.FC<Props> = (props) => {
         if (!map) {
             return;
         }
+        map.on(
+            'mouseenter',
+            SubLayerId.NegativeSpaceStatesFill,
+            debouncedHandleNoDataHover
+        );
+        map.on(
+            'mousemove',
+            SubLayerId.NegativeSpaceStatesFill,
+            debouncedHandleNoDataHover
+        );
+        map.on(
+            'mouseleave',
+            SubLayerId.NegativeSpaceStatesFill,
+            handleHoverExit
+        );
+
+        return () => {
+            map.off(
+                'mouseenter',
+                SubLayerId.NegativeSpaceStatesFill,
+                debouncedHandleNoDataHover
+            );
+            map.off(
+                'mousemove',
+                SubLayerId.NegativeSpaceStatesFill,
+                debouncedHandleNoDataHover
+            );
+            map.off(
+                'mouseleave',
+                SubLayerId.NegativeSpaceStatesFill,
+                handleHoverExit
+            );
+        };
+    }, [map, debouncedHandleNoDataHover]);
+
+    useEffect(() => {
+        if (!map) {
+            return;
+        }
 
         if (controller.current) {
             controller.current.abort();
@@ -514,13 +587,17 @@ const ComparisonMap: React.FC<Props> = (props) => {
                 });
             }
         } else if (hoverFeature.level === 'school-district') {
-            const otherFeature = findSchoolDistrict(
+            const otherFeatures = findSchoolDistrict(
                 hoverFeature,
                 model,
                 primSDFeatureCollection
             );
 
-            if (otherFeature) {
+            if (
+                otherFeatures.length > 0 &&
+                confirmSchoolDistrict(otherFeatures, hoverFeature)
+            ) {
+                const otherFeature = otherFeatures[0];
                 setOtherFeature({
                     which: 'primary',
                     level: 'school-district',
@@ -532,8 +609,8 @@ const ComparisonMap: React.FC<Props> = (props) => {
     }, [hoverFeature]);
 
     useEffect(() => {
-        if (!state || state.which === 'primary') {
-            if (!state && map) {
+        if (!otherState || otherState.which === 'primary') {
+            if (!otherState && map) {
                 map.setLayoutProperty(
                     SubLayerId.NegativeSpaceStatesFill,
                     'visibility',
@@ -547,9 +624,9 @@ const ComparisonMap: React.FC<Props> = (props) => {
             }
             return;
         }
-        if (state.level === 'state') {
+        if (otherState.level === 'state') {
             const stateAcronym =
-                state.feature.properties[StateLevelVariable.StateAcronym];
+                otherState.feature.properties[StateLevelVariable.StateAcronym];
 
             const otherFeature = primSMFeatureCollection.features.find(
                 (primFeature) =>
@@ -557,8 +634,8 @@ const ComparisonMap: React.FC<Props> = (props) => {
                     stateAcronym
             );
 
-            if (otherFeature) {
-                setOtherState({
+            if (otherFeature && confirmState(otherFeature, state)) {
+                setState({
                     which: 'primary',
                     level: 'state',
                     feature: otherFeature as StateFeature<Polygon>['feature'],
@@ -587,7 +664,7 @@ const ComparisonMap: React.FC<Props> = (props) => {
                 'visible'
             );
         }
-    }, [state, primSMFeatureCollection]);
+    }, [otherState]);
 
     useEffect(() => {
         if (!otherState || otherState.which === 'primary') {
@@ -633,19 +710,23 @@ const ComparisonMap: React.FC<Props> = (props) => {
     }, [otherState]);
 
     useEffect(() => {
-        if (!schoolDistrict || schoolDistrict.which === 'primary') {
+        if (!otherSchoolDistrict || otherSchoolDistrict.which === 'primary') {
             return;
         }
 
-        if (schoolDistrict.level === 'school-district') {
-            const otherFeature = findSchoolDistrict(
-                schoolDistrict,
+        if (otherSchoolDistrict.level === 'school-district') {
+            const otherFeatures = findSchoolDistrict(
+                otherSchoolDistrict,
                 model,
                 primSDFeatureCollection
             );
 
-            if (otherFeature) {
-                setOtherSchoolDistrict({
+            if (
+                otherFeatures.length > 0 &&
+                confirmSchoolDistrict(otherFeatures, schoolDistrict)
+            ) {
+                const otherFeature = otherFeatures[0];
+                setSchoolDistrict({
                     which: 'primary',
                     level: 'school-district',
                     feature:
@@ -653,7 +734,7 @@ const ComparisonMap: React.FC<Props> = (props) => {
                 });
             }
         }
-    }, [schoolDistrict, primSDFeatureCollection]);
+    }, [otherSchoolDistrict]);
 
     return (
         <>

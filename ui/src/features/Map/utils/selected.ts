@@ -55,15 +55,10 @@ export const getSelectedExpression = (
 
 const applyFeatureSelection = (
     map: Map,
-    fillLayerIds: string[],
     lineLayerIds: string[],
     feature: StateFeature['feature'] | SchoolDistrictFeature['feature'] | null
 ) => {
     const id = feature?.properties?.['id'] ?? feature?.id;
-
-    const fillOpacity: ExpressionSpecification | number = feature
-        ? getSelectedExpression(id!, 'fill-opacity')
-        : 0.5;
 
     const lineColor: ExpressionSpecification | string = feature
         ? getSelectedExpression(id!, 'line-color')
@@ -76,10 +71,6 @@ const applyFeatureSelection = (
     const lineSortKey: ExpressionSpecification | number = feature
         ? getSelectedExpression(id!, 'line-sort-key')
         : 0;
-
-    fillLayerIds.forEach((layerId) =>
-        map.setPaintProperty(layerId, 'fill-opacity', fillOpacity)
-    );
 
     lineLayerIds.forEach((layerId) => {
         map.setPaintProperty(layerId, 'line-color', lineColor);
@@ -94,7 +85,7 @@ export const selectFeature = (
     selectedFeature: StateFeature | SchoolDistrictFeature | null
 ) => {
     const level = selectedFeature?.level;
-    const { fill, line } = getLayerIds(which, level);
+    const { line } = getLayerIds(which, level);
 
-    applyFeatureSelection(map, fill, line, selectedFeature?.feature ?? null);
+    applyFeatureSelection(map, line, selectedFeature?.feature ?? null);
 };

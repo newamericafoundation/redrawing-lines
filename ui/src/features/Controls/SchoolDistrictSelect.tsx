@@ -6,6 +6,7 @@ import { useSchoolDistrictData } from 'src/hooks/useSchoolDistrictData';
 import { createCleanLabelFunction } from 'src/utils/cleanLabels';
 import { useMap } from 'src/contexts/MapContexts';
 import { PRIMARY_MAP_ID } from '../Map/Primary/config';
+import { clearGeocoder } from '../Map/utils/geocoder';
 
 export const SchoolDistrictSelect: React.FC = () => {
     const [options, setOptions] = useState<
@@ -43,7 +44,8 @@ export const SchoolDistrictSelect: React.FC = () => {
                     const value = Number(feature[SchoolDistrVariable.ID]);
                     const label = cleanLabel(
                         feature.properties[SchoolDistrVariable.Name] ??
-                            feature.properties[SchoolDistrVariable.GeoID]
+                            feature.properties[SchoolDistrVariable.GeoID],
+                        feature.properties[SchoolDistrVariable.GeoID] ?? ''
                     );
 
                     return {
@@ -72,11 +74,7 @@ export const SchoolDistrictSelect: React.FC = () => {
                 void goToSchoolDistrict(id);
 
                 if (geocoder) {
-                    try {
-                        geocoder.setInput('');
-                    } catch (error) {
-                        console.error(error);
-                    }
+                    clearGeocoder(geocoder);
                 }
             }
         }

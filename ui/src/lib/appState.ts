@@ -16,13 +16,13 @@ export type Which = 'primary' | 'comparison';
 export type StateFeature<T extends Geometry = Geometry> = {
     level: 'state';
     which: Which;
-    feature: Feature<T, StateMetricProperties & { id?: number }>;
+    feature: Feature<T, StateMetricProperties & { id?: string | number }>;
 };
 
 export type SchoolDistrictFeature<T extends Geometry = Geometry> = {
     level: 'school-district';
     which: Which;
-    feature: Feature<T, SchoolDistrictProperties & { id?: number }>;
+    feature: Feature<T, SchoolDistrictProperties & { id?: string | number }>;
 };
 
 export type InteractiveFeature<T extends Geometry = Geometry> =
@@ -32,6 +32,8 @@ export type InteractiveFeature<T extends Geometry = Geometry> =
 export interface AppState {
     infoPanelOpen: boolean;
     setInfoPanelOpen: (infoPanelOpen: boolean) => void;
+    reset: number;
+    setReset: (reset: number) => void;
     sliderPosition: number;
     setSliderPosition: (sliderPosition: number) => void;
     initialMapLoad: boolean;
@@ -40,6 +42,8 @@ export interface AppState {
     setMapsSynced: (mapsSynced: boolean) => void;
     mapMoved: number;
     setMapMoved: (mapMoved: number) => void;
+    showNoData: boolean;
+    setShowNoData: (showNoData: boolean) => void;
     comparisonActive: boolean;
     setComparisonActive: (comparisonActive: boolean) => void;
     model: Model;
@@ -105,6 +109,8 @@ export interface AppState {
 const useAppStore = create<AppState>()((set) => ({
     infoPanelOpen: true,
     setInfoPanelOpen: (infoPanelOpen) => set({ infoPanelOpen }),
+    reset: 0,
+    setReset: (reset) => set({ reset }),
     sliderPosition: 50,
     setSliderPosition: (sliderPosition) => set({ sliderPosition }),
     initialMapLoad: true,
@@ -113,6 +119,8 @@ const useAppStore = create<AppState>()((set) => ({
     setMapsSynced: (mapsSynced) => set({ mapsSynced }),
     mapMoved: 0,
     setMapMoved: (mapMoved) => set({ mapMoved }),
+    showNoData: false,
+    setShowNoData: (showNoData) => set({ showNoData }),
     comparisonActive: true,
     setComparisonActive: (comparisonActive) => set({ comparisonActive }),
     model: Model.Optimized,

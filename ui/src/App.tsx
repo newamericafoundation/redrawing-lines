@@ -25,7 +25,8 @@ import {
     ReactCompareSliderHandle,
 } from 'react-compare-slider';
 import Header from 'src/features/Header';
-import { Loading } from './features/Loading';
+import { Loading } from 'src/features/Loading';
+import { clearGeocoder } from 'src/features/Map/utils/geocoder';
 
 function App() {
     const infoPanelOpen = useAppStore((state) => state.infoPanelOpen);
@@ -33,6 +34,7 @@ function App() {
     const setSliderPosition = useAppStore((state) => state.setSliderPosition);
     const hoverFeature = useAppStore((state) => state.hoverFeature);
     const otherFeature = useAppStore((state) => state.otherFeature);
+    const showNoData = useAppStore((state) => state.showNoData);
     const schoolDistrict = useAppStore((state) => state.schoolDistrict);
     const otherSchoolDistrict = useAppStore(
         (state) => state.otherSchoolDistrict
@@ -42,10 +44,15 @@ function App() {
 
     const mapsSynced = useAppStore((state) => state.mapsSynced);
     const setMapsSynced = useAppStore((state) => state.setMapsSynced);
+    const reset = useAppStore((state) => state.reset);
 
     const [showReportLayout, setShowReportLayout] = useState(true);
 
-    const { map: primaryMap, root: primaryRoot } = useMap(PRIMARY_MAP_ID);
+    const {
+        map: primaryMap,
+        root: primaryRoot,
+        geocoder,
+    } = useMap(PRIMARY_MAP_ID);
     const { map: comparisonMap, root: comparisonRoot } =
         useMap(COMPARISON_MAP_ID);
 
@@ -67,6 +74,13 @@ function App() {
             }
         };
     }, []);
+
+    // Connect restart button to geocoder
+    useEffect(() => {
+        if (geocoder) {
+            clearGeocoder(geocoder);
+        }
+    }, [reset]);
 
     useEffect(() => {
         if (!primaryMap || !comparisonMap) {
@@ -191,7 +205,11 @@ function App() {
         <>
             <Header showReportLayout={showReportLayout} />
 
-            <main className={showReportLayout ? '' : 'showHeader'}>
+            <main
+                className={`${showReportLayout ? '' : 'showHeader'} ${
+                    infoPanelOpen ? '' : 'infoPanelClosed'
+                }`}
+            >
                 <ReactCompareSlider
                     handle={
                         <ReactCompareSliderHandle
@@ -238,7 +256,7 @@ function App() {
                 <Indicators showReportLayout={showReportLayout} />
 
                 {infoPanelOpen && <Panel showReportLayout={showReportLayout} />}
-                {hoverFeature && otherFeature && (
+                {((hoverFeature && otherFeature) || showNoData) && (
                     <StaticPopup
                         hoverFeature={hoverFeature}
                         otherFeature={otherFeature}

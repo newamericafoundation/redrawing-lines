@@ -19,12 +19,13 @@ export const Redistricting: React.FC<Props> = (props) => {
         100 - primary.feature.properties[SchoolDistrVariable.TaxPctStatewide];
 
     const taxPerPupil = Math.round(
-        comparison.feature.properties[SchoolDistrVariable.TaxPerPupil]
+        comparison.feature.properties[SchoolDistrVariable.TaxPerPupil] ?? 0
     ).toLocaleString('en-us');
 
     const statewideTaxPct =
         100 -
-        comparison.feature.properties[SchoolDistrVariable.TaxPctStatewide];
+        (comparison.feature.properties[SchoolDistrVariable.TaxPctStatewide] ??
+            0);
 
     return (
         <section

@@ -3,6 +3,7 @@ import { Select } from 'src/components/Select';
 import useAppStore from 'src/lib/appState';
 import { getModelOptions } from 'src/features/Controls/utils';
 import { Model } from 'src/types';
+import { getTooltipContent } from 'src/utils/tooltip';
 
 export const ModelSelect: React.FC = () => {
     const model = useAppStore((state) => state.model);
@@ -23,6 +24,8 @@ export const ModelSelect: React.FC = () => {
             value={model}
             options={options}
             onChange={handleModelChange}
+            tooltip
+            getTooltipContent={() => getTooltipContent(model)}
         />
     );
 };

@@ -1,4 +1,6 @@
+import Tippy from '@tippyjs/react';
 import { ChangeEventHandler } from 'react';
+import Info from 'src/assets/Info';
 import styles from 'src/components/Select/Select.module.css';
 
 type Props = {
@@ -9,6 +11,8 @@ type Props = {
     options: { value: string | number; label: string }[];
     onChange: ChangeEventHandler<HTMLSelectElement> | (() => void);
     disabled?: boolean;
+    tooltip?: boolean;
+    getTooltipContent?: () => string;
 };
 
 export const Select: React.FC<Props> = (props) => {
@@ -20,11 +24,22 @@ export const Select: React.FC<Props> = (props) => {
         options,
         onChange,
         disabled = false,
+        tooltip = false,
+        getTooltipContent = () => '',
     } = props;
 
     return (
         <div className={styles.selectWrapper}>
-            <label htmlFor={id + '-id'}>{label}</label>
+            {tooltip ? (
+                <Tippy content={getTooltipContent()}>
+                    <label htmlFor={id + '-id'}>
+                        {label}
+                        <Info />
+                    </label>
+                </Tippy>
+            ) : (
+                <label htmlFor={id + '-id'}>{label}</label>
+            )}
             <div className={styles.selectBody}>
                 <select
                     value={value}

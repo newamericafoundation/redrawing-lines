@@ -16,6 +16,7 @@ export const RestartButton: React.FC = () => {
     const setState = useAppStore((state) => state.setState);
     const setOtherState = useAppStore((state) => state.setOtherState);
     const setSliderPosition = useAppStore((state) => state.setSliderPosition);
+    const setReset = useAppStore((state) => state.setReset);
 
     const handleClick = () => {
         setModel(Model.Optimized);
@@ -25,6 +26,7 @@ export const RestartButton: React.FC = () => {
         setState(null);
         setOtherState(null);
         setSliderPosition(50);
+        setReset(Math.random());
     };
 
     return (

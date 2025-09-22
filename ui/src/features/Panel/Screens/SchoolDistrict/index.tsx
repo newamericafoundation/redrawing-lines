@@ -14,6 +14,8 @@ import Chart from './Chart';
 import Tippy from '@tippyjs/react';
 import { PRIMARY_MAP_ID } from 'src/features/Map/Primary/config';
 import { useMap } from 'src/contexts/MapContexts';
+import { isInvalidSchoolDistrictFeature } from '../../utils';
+import { clearGeocoder } from 'src/features/Map/utils/geocoder';
 
 const SchoolDistrict: React.FC = () => {
     const schoolDistrict = useAppStore((state) => state.schoolDistrict);
@@ -26,8 +28,10 @@ const SchoolDistrict: React.FC = () => {
     );
     const state = useAppStore((state) => state.state);
 
-    const [primary, setPrimary] = useState<SchoolDistrictFeature>();
-    const [comparison, setComparison] = useState<SchoolDistrictFeature>();
+    const [primary, setPrimary] = useState<SchoolDistrictFeature | null>(null);
+    const [comparison, setComparison] = useState<SchoolDistrictFeature | null>(
+        null
+    );
     const [title, setTitle] = useState('');
 
     const { featureCollection } = useSchoolDistrictData('primary');
@@ -61,7 +65,10 @@ const SchoolDistrict: React.FC = () => {
         if (state) {
             const title = createCleanLabelFunction(
                 state.feature.properties[StateLevelVariable.StateAcronym]
-            )(primary.feature.properties[SchoolDistrVariable.Name] ?? '');
+            )(
+                primary.feature.properties[SchoolDistrVariable.Name] ?? '',
+                primary.feature.properties[SchoolDistrVariable.GeoID] ?? ''
+            );
 
             setTitle(title);
         }
@@ -77,7 +84,7 @@ const SchoolDistrict: React.FC = () => {
         setOtherSchoolDistrict(null);
 
         if (geocoder) {
-            geocoder.setInput('');
+            clearGeocoder(geocoder);
         }
     };
 
@@ -102,19 +109,32 @@ const SchoolDistrict: React.FC = () => {
                     </div>
                 </Tippy>
             </section>
-            {primary && comparison && (
+            {isInvalidSchoolDistrictFeature(comparison) && state ? (
+                <Typography variant="body-large">
+                    District borders in{' '}
+                    {state.feature.properties[StateLevelVariable.Name]} would
+                    not change from county-based redistricting.
+                </Typography>
+            ) : (
                 <>
-                    <Redistricting primary={primary} comparison={comparison} />
-                    <StudentsInPoverty
-                        primary={primary}
-                        comparison={comparison}
-                        primaryFeatureCollection={featureCollection}
-                    />
-                    <Chart
-                        primary={primary}
-                        comparison={comparison}
-                        primaryFeatureCollection={featureCollection}
-                    />
+                    {primary && comparison && (
+                        <>
+                            <Redistricting
+                                primary={primary}
+                                comparison={comparison}
+                            />
+                            <StudentsInPoverty
+                                primary={primary}
+                                comparison={comparison}
+                                primaryFeatureCollection={featureCollection}
+                            />
+                            <Chart
+                                primary={primary}
+                                comparison={comparison}
+                                primaryFeatureCollection={featureCollection}
+                            />
+                        </>
+                    )}
                 </>
             )}
         </div>

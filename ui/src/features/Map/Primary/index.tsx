@@ -34,12 +34,17 @@ import {
     updateSchoolDistricts,
     updateStateMetrics,
 } from 'src/features/Map/utils/style';
-import { findSchoolDistrict } from 'src/features/Map/utils/findSchoolDistrict';
+import {
+    confirmSchoolDistrict,
+    confirmState,
+    findSchoolDistrict,
+} from 'src/features/Map/utils/find';
 import { COMPARISON_MAP_ID } from '../Comparison/config';
 import { RestartButton } from 'src/features/Tools/Restart/Button';
 import { ResetSliderButton } from 'src/features/Tools/ResetSlider/Button';
 import { filteredStates } from '../utils/filter';
 import { getStateName } from 'src/utils/states';
+import { clearGeocoder } from '../utils/geocoder';
 
 const INITIAL_CENTER: [number, number] = [-98.5795, 39.8282];
 const INITIAL_ZOOM = 4;
@@ -68,6 +73,9 @@ const PrimaryMap: React.FC<Props> = (props) => {
     const otherState = useAppStore((store) => store.otherState);
     const setOtherState = useAppStore((store) => store.setOtherState);
     const schoolDistrict = useAppStore((store) => store.schoolDistrict);
+    const otherSchoolDistrict = useAppStore(
+        (store) => store.otherSchoolDistrict
+    );
     const setSchoolDistrict = useAppStore((store) => store.setSchoolDistrict);
     const setOtherSchoolDistrict = useAppStore(
         (store) => store.setOtherSchoolDistrict
@@ -77,6 +85,7 @@ const PrimaryMap: React.FC<Props> = (props) => {
     const setHoverFeature = useAppStore((store) => store.setHoverFeature);
     const setOtherFeature = useAppStore((store) => store.setOtherFeature);
     const setSliderPosition = useAppStore((store) => store.setSliderPosition);
+    const setShowNoData = useAppStore((store) => store.setShowNoData);
 
     const { map, geocoder, hoverPopup } = useMap(PRIMARY_MAP_ID);
     const { map: comparisonMap } = useMap(COMPARISON_MAP_ID);
@@ -124,11 +133,7 @@ const PrimaryMap: React.FC<Props> = (props) => {
             setState({ which: 'primary', level: 'state', feature });
 
             if (geocoder) {
-                try {
-                    geocoder.setInput('');
-                } catch (error) {
-                    console.error(error);
-                }
+                clearGeocoder(geocoder);
             }
 
             void goToState(stateAcronym);
@@ -159,11 +164,7 @@ const PrimaryMap: React.FC<Props> = (props) => {
             });
 
             if (geocoder) {
-                try {
-                    geocoder.setInput('');
-                } catch (error) {
-                    console.error(error);
-                }
+                clearGeocoder(geocoder);
             }
 
             void goToSchoolDistrict(schoolDistrict);
@@ -180,6 +181,8 @@ const PrimaryMap: React.FC<Props> = (props) => {
         });
 
         if (features.length > 0) {
+            setShowNoData(false);
+
             const feature =
                 features[0] as unknown as StateFeature<Polygon>['feature'];
             const hoverFeature = useAppStore.getState().hoverFeature;
@@ -206,6 +209,8 @@ const PrimaryMap: React.FC<Props> = (props) => {
         });
 
         if (features.length > 0) {
+            setShowNoData(false);
+
             if (hoverPopup) {
                 hoverPopup.remove();
             }
@@ -225,6 +230,23 @@ const PrimaryMap: React.FC<Props> = (props) => {
             }
         }
     };
+    const handleNoDataHover = (e: MapMouseEvent) => {
+        if (!map) {
+            return;
+        }
+        const features = map.queryRenderedFeatures(e.point, {
+            layers: [
+                SubLayerId.SchoolDistrictsSQFill,
+                SubLayerId.SchoolDistrictsSQBoundary,
+            ],
+        });
+
+        if (features.length === 0) {
+            map.getCanvas().style.cursor = 'not-allowed';
+
+            setShowNoData(true);
+        }
+    };
 
     const handleHoverExit = () => {
         if (!map) {
@@ -234,8 +256,10 @@ const PrimaryMap: React.FC<Props> = (props) => {
         map.getCanvas().style.cursor = '';
         debouncedHandleStateHover.cancel();
         debouncedHandleSchoolDistrictHover.cancel();
+        debouncedHandleNoDataHover.cancel();
         setHoverFeature(null);
         setOtherFeature(null);
+        setShowNoData(false);
     };
 
     const debouncedHandleMapMove = useMemo(() => {
@@ -243,6 +267,9 @@ const PrimaryMap: React.FC<Props> = (props) => {
     }, [map]);
     const debouncedHandleStateHover = useMemo(() => {
         return debounce(handleStateHover, 25);
+    }, [map]);
+    const debouncedHandleNoDataHover = useMemo(() => {
+        return debounce(handleNoDataHover, 5);
     }, [map]);
 
     const debouncedHandleSchoolDistrictHover = useMemo(() => {
@@ -257,6 +284,7 @@ const PrimaryMap: React.FC<Props> = (props) => {
             isMounted.current = false;
             debouncedHandleMapMove.cancel();
             debouncedHandleStateHover.cancel();
+            debouncedHandleNoDataHover.cancel();
             debouncedHandleSchoolDistrictHover.cancel();
         };
     }, []);
@@ -367,6 +395,45 @@ const PrimaryMap: React.FC<Props> = (props) => {
     }, [map, debouncedHandleSchoolDistrictHover]);
 
     useEffect(() => {
+        if (!map) {
+            return;
+        }
+        map.on(
+            'mouseenter',
+            SubLayerId.NegativeSpaceStatesFill,
+            debouncedHandleNoDataHover
+        );
+        map.on(
+            'mousemove',
+            SubLayerId.NegativeSpaceStatesFill,
+            debouncedHandleNoDataHover
+        );
+        map.on(
+            'mouseleave',
+            SubLayerId.NegativeSpaceStatesFill,
+            handleHoverExit
+        );
+
+        return () => {
+            map.off(
+                'mouseenter',
+                SubLayerId.NegativeSpaceStatesFill,
+                debouncedHandleNoDataHover
+            );
+            map.off(
+                'mousemove',
+                SubLayerId.NegativeSpaceStatesFill,
+                debouncedHandleNoDataHover
+            );
+            map.off(
+                'mouseleave',
+                SubLayerId.NegativeSpaceStatesFill,
+                handleHoverExit
+            );
+        };
+    }, [map, debouncedHandleNoDataHover]);
+
+    useEffect(() => {
         if (
             !geocoder ||
             !map ||
@@ -378,66 +445,63 @@ const PrimaryMap: React.FC<Props> = (props) => {
 
         let primMarker: Marker;
         let compMarker: Marker;
-        geocoder.on('result', (e) => {
-            (async () => {
-                if (primMarker) {
-                    primMarker.remove();
+        geocoder.on('result', async (e) => {
+            if (primMarker) {
+                primMarker.remove();
+            }
+            if (compMarker) {
+                compMarker.remove();
+            }
+
+            const result: MapboxGeocoder.Result = e.result;
+            const center = result.center as [number, number];
+            const primElement = document.createElement('div');
+            primElement.className = 'custom-marker';
+
+            const compElement = document.createElement('div');
+            compElement.className = 'custom-marker';
+
+            primMarker = new Marker(primElement).setLngLat(center).addTo(map);
+            compMarker = new Marker(compElement)
+                .setLngLat(center)
+                .addTo(comparisonMap);
+
+            const featureCollection = await locateSchoolDistrict(center);
+
+            if (
+                featureCollection?.features &&
+                featureCollection.features.length > 0
+            ) {
+                const feature = featureCollection.features[0];
+                const stateAcronym =
+                    feature.properties[SchoolDistrVariable.State];
+                const state = findState(stateAcronym);
+
+                const sliderPosition = useAppStore.getState().sliderPosition;
+                // Adjust slider to not cover marker
+                if (sliderPosition >= 40 && sliderPosition <= 60) {
+                    setSliderPosition(70);
                 }
-                if (compMarker) {
-                    compMarker.remove();
+
+                if (state) {
+                    setState({
+                        which: 'primary',
+                        level: 'state',
+                        feature: state,
+                    });
+                    setSchoolDistrict({
+                        which: 'primary',
+                        level: 'school-district',
+                        feature,
+                    });
+                    const schoolDistrict =
+                        feature.properties[SchoolDistrVariable.ID] ??
+                        feature[SchoolDistrVariable.ID];
+                    void goToSchoolDistrict(schoolDistrict);
                 }
-                const result: MapboxGeocoder.Result = e.result;
-                const center = result.center as [number, number];
-                const primElement = document.createElement('div');
-                primElement.className = 'custom-marker';
-
-                const compElement = document.createElement('div');
-                compElement.className = 'custom-marker';
-
-                primMarker = new Marker(primElement)
-                    .setLngLat(center)
-                    .addTo(map);
-                compMarker = new Marker(compElement)
-                    .setLngLat(center)
-                    .addTo(comparisonMap);
-
-                const featureCollection = await locateSchoolDistrict(center);
-                if (
-                    featureCollection?.features &&
-                    featureCollection.features.length > 0
-                ) {
-                    const feature = featureCollection.features[0];
-                    const stateAcronym =
-                        feature.properties[SchoolDistrVariable.State];
-                    const state = findState(stateAcronym);
-
-                    const sliderPosition =
-                        useAppStore.getState().sliderPosition;
-                    // Adjust slider to not cover marker
-                    if (sliderPosition >= 40 && sliderPosition <= 60) {
-                        setSliderPosition(70);
-                    }
-
-                    if (state) {
-                        setState({
-                            which: 'primary',
-                            level: 'state',
-                            feature: state,
-                        });
-                        setSchoolDistrict({
-                            which: 'primary',
-                            level: 'school-district',
-                            feature,
-                        });
-                        const schoolDistrict =
-                            feature.properties[SchoolDistrVariable.ID] ??
-                            feature[SchoolDistrVariable.ID];
-                        void goToSchoolDistrict(schoolDistrict);
-                    }
-                } else {
-                    console.warn('Unable to to locate school district');
-                }
-            })();
+            } else {
+                console.warn('Unable to to locate school district');
+            }
         });
 
         geocoder.on('clear', () => {
@@ -448,8 +512,8 @@ const PrimaryMap: React.FC<Props> = (props) => {
                 compMarker.remove();
             }
 
-            setSchoolDistrict(null);
-            setOtherSchoolDistrict(null);
+            // setSchoolDistrict(null);
+            // setOtherSchoolDistrict(null);
         });
 
         return () => {
@@ -460,7 +524,7 @@ const PrimaryMap: React.FC<Props> = (props) => {
                 compMarker.remove();
             }
         };
-    }, [geocoder, primSMFeatureCollection]);
+    }, [map, comparisonMap, geocoder, primSMFeatureCollection]);
 
     useEffect(() => {
         if (!map) return;
@@ -537,13 +601,17 @@ const PrimaryMap: React.FC<Props> = (props) => {
                 });
             }
         } else if (hoverFeature.level === 'school-district') {
-            const otherFeature = findSchoolDistrict(
+            const otherFeatures = findSchoolDistrict(
                 hoverFeature,
                 model,
                 compSDFeatureCollection
             );
 
-            if (otherFeature) {
+            if (
+                otherFeatures.length > 0 &&
+                confirmSchoolDistrict(otherFeatures, hoverFeature)
+            ) {
+                const otherFeature = otherFeatures[0];
                 setOtherFeature({
                     which: 'comparison',
                     level: 'school-district',
@@ -589,7 +657,7 @@ const PrimaryMap: React.FC<Props> = (props) => {
                     stateAcronym
             );
 
-            if (otherFeature) {
+            if (otherFeature && confirmState(otherFeature, otherState)) {
                 setOtherState({
                     which: 'comparison',
                     level: 'state',
@@ -622,7 +690,7 @@ const PrimaryMap: React.FC<Props> = (props) => {
     }, [state, compSMFeatureCollection]);
 
     useEffect(() => {
-        if (!otherState || otherState.which === 'primary') {
+        if (!otherState || otherState.which === 'comparison') {
             if (!otherState && map) {
                 map.setLayoutProperty(
                     SubLayerId.NegativeSpaceStatesFill,
@@ -670,13 +738,17 @@ const PrimaryMap: React.FC<Props> = (props) => {
         }
 
         if (schoolDistrict.level === 'school-district') {
-            const otherFeature = findSchoolDistrict(
+            const otherFeatures = findSchoolDistrict(
                 schoolDistrict,
                 model,
                 compSDFeatureCollection
             );
 
-            if (otherFeature) {
+            if (
+                otherFeatures.length > 0 &&
+                confirmSchoolDistrict(otherFeatures, otherSchoolDistrict)
+            ) {
+                const otherFeature = otherFeatures[0];
                 setOtherSchoolDistrict({
                     which: 'comparison',
                     level: 'school-district',

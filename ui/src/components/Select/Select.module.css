@@ -3,7 +3,14 @@
 }
 
 .selectWrapper label {
-    display: block;
+    display: flex;
+    align-items: center;
+}
+
+.selectWrapper label > svg {
+    width: 16px;
+    height: auto;
+    margin-left: 4px;
 }
 
 .selectBody {
