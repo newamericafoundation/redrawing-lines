@@ -8,6 +8,7 @@ import {
     getMoreLabel,
 } from 'src/utils/friendlyNames';
 import { Typography } from 'src/components/Typography';
+import { isGradientReversed } from 'src/features/Controls/utils';
 
 export const Gradient: React.FC = () => {
     const variable = useAppStore((state) => state.variable);
@@ -26,6 +27,15 @@ export const Gradient: React.FC = () => {
             `${color} ${stepLength * index}% ${stepLength * (index + 1)}%`
     );
 
+    const isReverse = isGradientReversed(variable);
+
+    const leftLabel = isReverse
+        ? getMoreLabel(variable)
+        : getLessLabel(variable);
+    const rightLabel = isReverse
+        ? getLessLabel(variable)
+        : getMoreLabel(variable);
+
     return (
         <>
             {colors.length > 0 && (
@@ -36,18 +46,14 @@ export const Gradient: React.FC = () => {
                     <div
                         className={styles.gradient}
                         style={{
-                            background: `linear-gradient(to right, ${coloration.join(
-                                ', '
-                            )})`,
+                            background: `linear-gradient(${
+                                isReverse ? 'to left' : 'to right'
+                            }, ${coloration.join(', ')})`,
                         }}
                     ></div>
                     <div className={styles.gradientLabelContainer}>
-                        <Typography variant="body">
-                            {getLessLabel(variable)}
-                        </Typography>
-                        <Typography variant="body">
-                            {getMoreLabel(variable)}
-                        </Typography>
+                        <Typography variant="body">{leftLabel}</Typography>
+                        <Typography variant="body">{rightLabel}</Typography>
                     </div>
                 </div>
             )}

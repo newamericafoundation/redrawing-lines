@@ -2,7 +2,9 @@ import { getFriendlyName } from 'src/utils/friendlyNames';
 import {
     modelValues,
     schoolDistrDataVariableValues,
+    SchoolDistrVariable,
     stateLevelDataVariableValues,
+    StateLevelVariable,
 } from 'src/types';
 
 export const getStateLevelOptions = () => {
@@ -24,4 +26,15 @@ export const getModelOptions = () => {
         value: model,
         label: getFriendlyName(model),
     }));
+};
+
+export const isGradientReversed = (
+    variable: StateLevelVariable | SchoolDistrVariable
+) => {
+    const reverseVariables: Array<StateLevelVariable | SchoolDistrVariable> = [
+        StateLevelVariable.TheilEconomic,
+        StateLevelVariable.TheilFunding,
+        StateLevelVariable.ThielRacial,
+    ];
+    return reverseVariables.includes(variable);
 };
